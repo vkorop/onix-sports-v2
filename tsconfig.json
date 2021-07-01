@@ -26,5 +26,4 @@
       "@decorators/*": ["./src/decorators/*"]
     }
   }
-  }
 }
