@@ -1,3 +1,4 @@
+import { StatisticsModule } from '@components/statistics/statistics.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -23,7 +24,8 @@ import { AppService } from './app.service';
       // parser if they find a bug in the new parse
       useNewUrlParser: true,
       useUnifiedTopology: true,
-    })
+    }),
+    StatisticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
