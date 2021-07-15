@@ -54,6 +54,27 @@ export default class StatisticsRepository {
           },
         },
       },
+      {
+        $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'user'
+        },
+      },
+      {
+        $addFields: {
+          user: { $arrayElemAt: ["$user", 0] },
+        },
+      },
+      {
+        $addFields: {
+          name: "$user.name",
+        },
+      },
+      {
+        $unset: "user",
+      },
     ]);
   }
 }
