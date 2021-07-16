@@ -3,6 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ObjectId } from 'mongodb';
 
 import statisticsConstants from '../statistics-constants';
+import userConstants from '@components/users/user-constants';
+import gamesConstants from '@components/games/games-constants';
 
 export class StatisticEntity extends Document {
   @ApiProperty({ type: String })
@@ -25,12 +27,13 @@ export const StatisticSchema = new Schema(
       type: Boolean,
       required: true,
     },
-    // game: {
-    //   type: ObjectId,
-    //   required: true,
-    // },
+    game: {
+      type: ObjectId,
+      ref: gamesConstants.models.games,
+    },
     user: {
       type: ObjectId,
+      ref: userConstants.models.users,
       required: true,
     }
   },

@@ -1,3 +1,4 @@
+import { GamesModule } from '@components/games/games.module';
 import { StatisticsModule } from '@components/statistics/statistics.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -26,6 +27,7 @@ import { AppService } from './app.service';
       useUnifiedTopology: true,
     }),
     StatisticsModule,
+    GamesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

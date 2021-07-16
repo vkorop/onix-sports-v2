@@ -13,4 +13,7 @@ export default class CreateStatsDto {
 
     @ApiProperty({ type: ObjectId })
     readonly user: ObjectId = new ObjectId();
+    
+    @ApiProperty({ type: ObjectId })
+    readonly game: ObjectId = new ObjectId();
 }
