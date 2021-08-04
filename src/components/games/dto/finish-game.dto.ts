@@ -3,12 +3,9 @@ import { ObjectId } from 'mongodb';
 import { Winner } from "../enum/winner.enum";
 
 export default class FinishGameDto {
-    @ApiProperty({ type: ObjectId })
+    @ApiProperty({ type: String })
     readonly id: ObjectId = new ObjectId();
 
-    @ApiProperty({ type: Winner })
+    @ApiProperty({ type: Number })
     readonly winner: Winner = Winner.red;
-
-    @ApiProperty({ type: [] })
-    readonly stats: Array<ObjectId> = [];
 }

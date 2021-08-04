@@ -5,9 +5,9 @@ export default class CreateGameDto {
     @ApiProperty({ type: String })
     readonly title: string | null = '';
 
-    @ApiProperty({ type: [] })
-    readonly teams: Array<Array<ObjectId>> = [];
+    @ApiProperty({ type: [String] })
+    readonly teams: [ObjectId] = [new ObjectId];
 
-    @ApiProperty({ type: [] })
+    @ApiProperty({ type: String })
     readonly tournament: ObjectId | null = new ObjectId();
 }

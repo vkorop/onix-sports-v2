@@ -4,6 +4,8 @@ import { ObjectId } from 'mongodb';
 
 import gameConstants from '../games-constants';
 import { Winner } from '../enum/winner.enum';
+import statisticsConstants from '@components/statistics/statistics-constants';
+import userConstants from '@components/users/user-constants';
 
 export class GameEntity extends Document {
   @ApiProperty({ type: String })
@@ -18,7 +20,8 @@ export const GameSchema = new Schema(
       required: true,
     },
     teams: {
-      type: [[ObjectId]],
+      type: [[{ type: ObjectId, ref: userConstants.models.users }]],
+      ref: userConstants.models.users,
       required: true,
     },
     finished: {
@@ -28,6 +31,7 @@ export const GameSchema = new Schema(
     },
     stats: {
       type: [ObjectId],
+      ref: statisticsConstants.models.statistics
     },
     winner: {
       type: Winner,

@@ -13,9 +13,7 @@ export class StatisticsService {
     return this.statisticRepository.create(stats);
   }
 
-  public getStats(ids: string, dateFrom: string, dateTo: string) {
-    const _ids: ObjectId[] = ids.split(',').map(id => new ObjectId(id));
-
-    return this.statisticRepository.getStats(_ids, new Date(Number(dateFrom)), new Date(Number(dateTo)));
+  public getStats(ids: ObjectId[], dateFrom: Date, dateTo: Date) {
+    return this.statisticRepository.getStats(ids, dateFrom, dateTo);
   }
 }

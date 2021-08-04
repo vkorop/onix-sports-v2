@@ -19,7 +19,12 @@ export default class GamesRepository {
     return this.gameModel.create(games);
   }
 
-  finish(_id: ObjectId, winner: Winner, stats: Array<ObjectId>) {
-    return this.gameModel.updateOne({ _id, finished: false }, { finished: true, winner, stats });
+  finish(_id: ObjectId, winner: Winner) {
+    return this.gameModel.updateOne({ _id, finished: false }, { finished: true, winner });
+  }
+
+  getGameInfo(id: ObjectId) {
+    return this.gameModel.findById(id).populate('teams.$.teams')
+    //.populate({ path: 'teams', populate: { path: 'teams' } });
   }
 }

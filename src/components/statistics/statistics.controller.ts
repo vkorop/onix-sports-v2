@@ -1,7 +1,12 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, ParseArrayPipe, Post, Query } from '@nestjs/common';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ParseDatePipe } from '@pipes/date.pipe';
+import { ObjectIdsPipe } from '@pipes/objectIds.pipe';
+import { ObjectId } from 'mongodb';
 import CreateStatsDto from './dto/create-stats.dto';
 import { StatisticsService } from './statistics.service';
 
+@ApiTags('Statistics')
 @Controller('statistics')
 export class StatisticsController {
   constructor(
@@ -9,15 +14,16 @@ export class StatisticsController {
   ) {}
 
   @Post('/save')
+  @ApiBody({ type: [CreateStatsDto] })
   public async saveStats(@Body() stats: CreateStatsDto[]) {
     return this.statisticService.saveStats(stats);
   }
 
   @Get('/get')
   public getStats(
-    @Query('ids') ids: string,
-    @Query('dateFrom') dateFrom: string,
-    @Query('dateTo') dateTo: string,
+    @Query('ids', ObjectIdsPipe) ids: ObjectId[],
+    @Query('dateFrom', ParseDatePipe) dateFrom: Date,
+    @Query('dateTo', ParseDatePipe) dateTo: Date,
   ) {
     return this.statisticService.getStats(ids, dateFrom, dateTo);
   }
