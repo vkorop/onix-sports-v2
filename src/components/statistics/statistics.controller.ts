@@ -22,8 +22,8 @@ export class StatisticsController {
   @Get('/get')
   public getStats(
     @Query('ids', ObjectIdsPipe) ids: ObjectId[],
-    @Query('dateFrom', ParseDatePipe) dateFrom: Date,
-    @Query('dateTo', ParseDatePipe) dateTo: Date,
+    @Query('dateFrom', ParseDatePipe) dateFrom: Number,
+    @Query('dateTo', ParseDatePipe) dateTo: Number,
   ) {
     return this.statisticService.getStats(ids, dateFrom, dateTo);
   }

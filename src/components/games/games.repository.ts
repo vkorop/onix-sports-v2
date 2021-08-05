@@ -1,6 +1,6 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ObjectId, ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { Injectable } from '@nestjs/common';
 import statisticsConstants from './games-constants';
 import { GameEntity } from './schemas/game.schema';
@@ -19,12 +19,11 @@ export default class GamesRepository {
     return this.gameModel.create(games);
   }
 
-  finish(_id: ObjectId, winner: Winner) {
-    return this.gameModel.updateOne({ _id, finished: false }, { finished: true, winner });
+  finish(_id: ObjectId, winner: Winner, stats: Array<ObjectId>) {
+    return this.gameModel.updateOne({ _id, finished: false }, { finished: true, winner, stats });
   }
 
   getGameInfo(id: ObjectId) {
-    return this.gameModel.findById(id).populate('teams.$.teams')
-    //.populate({ path: 'teams', populate: { path: 'teams' } });
+    return this.gameModel.findById(id).populate('teams.players stats');
   }
 }

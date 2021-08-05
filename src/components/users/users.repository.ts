@@ -1,6 +1,6 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ObjectId, ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { Injectable } from '@nestjs/common';
 import userConstants from './user-constants';
 import { UserEntity } from './schemas/user.schema';
@@ -16,5 +16,13 @@ export default class UsersRepository {
 
   create(user: SignUpDto) {
     return this.userModel.create(user);
+  }
+
+  getAll() {
+    return this.userModel.find({}, { password: 0 });
+  }
+
+  getUser(id: ObjectId) {
+    return this.userModel.findById(id, { password: 0 });
   }
 }

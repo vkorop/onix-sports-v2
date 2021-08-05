@@ -14,8 +14,8 @@ export class GamesService {
     return this.gamesRepository.create(games);
   }
 
-  public finishGame({ id, winner }: FinishGameDto) {
-    return this.gamesRepository.finish(id, winner);
+  public finishGame({ id, winner, stats }: FinishGameDto) {
+    return this.gamesRepository.finish(id, winner, stats);
   }
 
   public getGameInfo(id: ObjectId) {

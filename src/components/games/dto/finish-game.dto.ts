@@ -8,4 +8,7 @@ export default class FinishGameDto {
 
     @ApiProperty({ type: Number })
     readonly winner: Winner = Winner.red;
+
+    @ApiProperty({ type: [String] })
+    readonly stats: [ObjectId] = [new ObjectId()];
 }

@@ -12,6 +12,14 @@ export class GameEntity extends Document {
   readonly _id: Types.ObjectId = new ObjectId();
 }
 
+export const TeamSchema = new Schema({
+  players: {
+    type: [ObjectId],
+    ref: userConstants.models.users,
+    required: true
+  },
+});
+
 export const GameSchema = new Schema(
   {
     title: {
@@ -20,7 +28,7 @@ export const GameSchema = new Schema(
       required: true,
     },
     teams: {
-      type: [[{ type: ObjectId, ref: userConstants.models.users }]],
+      type: [TeamSchema],
       ref: userConstants.models.users,
       required: true,
     },
