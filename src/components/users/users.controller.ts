@@ -1,5 +1,5 @@
-import { Controller, Get, HttpStatus, Query, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, HttpStatus, Param, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { ParseObjectIdPipe } from '@pipes/objectId.pipe';
 import { ObjectId } from 'mongodb';
 import { UsersService } from './users.service';
@@ -11,15 +11,16 @@ export class UsersController {
     private readonly usersService: UsersService,
   ) {}
 
-  @Get('/all')
+  @Get('/')
   public getAll() {
     return this.usersService.getAll();
   }
 
-  @Get('/get-one')
+  @ApiParam({ name: 'id', type: String })
+  @Get('/:id')
   public getUser(
-    @Query('id') id: string,
+    @Param('id', ParseObjectIdPipe) id: ObjectId,
   ) {
-    return this.usersService.getUser(new ObjectId(id));
+    return this.usersService.getUser(id);
   }
 }

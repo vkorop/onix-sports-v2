@@ -13,7 +13,7 @@ export class StatisticsService {
     return this.statisticRepository.create(stats);
   }
 
-  public getStats(ids: ObjectId[], dateFrom: Number, dateTo: Number) {
+  public getStats(ids: ObjectId[], dateFrom: Date, dateTo: Date) {
     return this.statisticRepository.getStats(ids, dateFrom, dateTo);
   }
 }

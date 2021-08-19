@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ParseObjectIdPipe } from '@pipes/objectId.pipe';
 import { ObjectId } from 'mongodb';
@@ -13,21 +13,21 @@ export class GamesController {
     private readonly gameService: GamesService,
   ) {}
 
-  @Get('/:gameId/info')
-  @ApiParam({ name: 'gameId', required: true })
+  @Get('/:gameId')
+  @ApiParam({ name: 'gameId', type: String })
   public async getGameInfo(
     @Param('gameId', ParseObjectIdPipe) gameId: ObjectId,
   ) {
     return this.gameService.getGameInfo(gameId);
   }
 
-  @Post('/create')
+  @Post('/')
   @ApiBody({ type: [CreateGamesDto] })
   public async createGames(@Body() games: CreateGamesDto[]) {
     return this.gameService.createGames(games);
   }
 
-  @Post('/finish')
+  @Patch('/finish')
   @ApiBody({ type: FinishGameDto })
   public async finishGame(@Body() gameInfo: FinishGameDto) {
     return this.gameService.finishGame(gameInfo);

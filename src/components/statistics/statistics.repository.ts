@@ -18,7 +18,7 @@ export default class StatisticsRepository {
     return this.statisticModel.create(stats);
   }
 
-  async getStats(ids: ObjectId[], dateFrom: Number, dateTo: Number) {
+  async getStats(ids: ObjectId[], dateFrom: Date, dateTo: Date) {
     console.log(ids, dateFrom, dateTo)
 
     return this.statisticModel.aggregate([
