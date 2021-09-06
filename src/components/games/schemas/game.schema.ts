@@ -71,6 +71,9 @@ export const GameSchema = new Schema(
     startedAt: {
       type: Date,
     },
+    finishedAt: {
+      type: Date,
+    },
     // tournament: {
     //   type: ObjectId,
     //   ref: ,

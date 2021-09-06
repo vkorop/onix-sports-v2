@@ -47,9 +47,9 @@ export class GamesGateway {
   async handleGoal(
     @ConnectedSocket() client: Socket, 
     @MessageBody() { roomId, playerId }: any): Promise<WsResponse<unknown>> {
-    this.logger.log(`Client ${client.id} saved action ${ActionType.GOAL}`);
+    this.logger.log(`Client ${client.id} saved action ${ActionType.MGOAL}`);
 
-    await this.gameService.saveAction(roomId, { actionType: ActionType.GOAL, playerId });
+    await this.gameService.saveAction(roomId, { actionType: ActionType.MGOAL, playerId });
 
     client.to(roomId);
 

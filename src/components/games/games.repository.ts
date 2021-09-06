@@ -23,6 +23,10 @@ export default class GamesRepository {
     return this.gameModel.updateOne({ roomId }, update);
   }
 
+  getActions(roomId: Number) {
+    return this.gameModel.findOne({ roomId }).select('actions');
+  }
+
   getGameInfo(id: ObjectId) {
     return this.gameModel.findById(id).populate('teams.players stats');
   }

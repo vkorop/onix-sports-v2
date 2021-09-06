@@ -1,8 +1,9 @@
 export enum ActionType {
-  GOAL = 'GOAL',
+  RGOAL = 'RGOAL',
+  MGOAL = 'MGOAL',
   SWAP = 'SWAP',
   PAUSE = 'PAUSE',
   RESUME = 'RESUME',
   START = 'START',
-  FINISHED = 'FINISH',
+  FINISH = 'FINISH',
 }

@@ -27,8 +27,10 @@ export class GamesService {
     return this.gamesRepository.updateByRoom(id, { $push: { actions: action } })
   }
 
-  public async finishGame(id: any, { winner, stats }: any) {
-    return this.gamesRepository.updateByRoom(id, { $set: { status: GameStatus.FINISHED, winner, stats } });
+  public async finishGame(id: any, { winner }: any) {
+    const actions = await this.gamesRepository.getActions(id);
+
+    return this.gamesRepository.updateByRoom(id, { $set: { status: GameStatus.FINISHED, winner, finishedAt: new Date() } });
   }
 
   public getGameInfo(id: ObjectId) {
