@@ -5,7 +5,7 @@ import { ActionType } from './enum/action-type.enum';
 import { GamesService } from './games.service';
 import { ActionEntity } from './schemas/game.schema';
 
-@WebSocketGateway(80, { transports: ['websocket'] })
+@WebSocketGateway({ transports: ['websocket'] })
 export class GamesGateway {
   constructor(
     private readonly gameService: GamesService,
