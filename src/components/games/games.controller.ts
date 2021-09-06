@@ -26,10 +26,4 @@ export class GamesController {
   public async createGames(@Body() games: CreateGamesDto[]) {
     return this.gameService.createGames(games);
   }
-
-  @Patch('/finish')
-  @ApiBody({ type: FinishGameDto })
-  public async finishGame(@Body() gameInfo: FinishGameDto) {
-    return this.gameService.finishGame(gameInfo);
-  }
 }

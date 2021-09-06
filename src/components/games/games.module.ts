@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GameSchema } from './schemas/game.schema';
 import GamesRepository from './games.repository';
 import gamesConstants from './games-constants';
+import { GamesGateway } from './games.gateway';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import gamesConstants from './games-constants';
     ]),
   ],
   controllers: [GamesController],
-  providers: [GamesService, GamesRepository],
+  providers: [GamesService, GamesRepository, GamesGateway],
   exports: [GamesService, GamesRepository],
 })
 export class GamesModule {}

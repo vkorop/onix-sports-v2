@@ -13,13 +13,6 @@ export class StatisticsController {
     private readonly statisticService: StatisticsService,
   ) {}
 
-  @Post('/')
-  @ApiBody({ type: [CreateStatsDto] })
-  public async saveStats(@Body() stats: CreateStatsDto[]) {
-    return this.statisticService.saveStats(stats);
-  }
-
-
   @ApiQuery({ name: 'ids', type: [String] })
   @ApiQuery({ name: 'dateFrom', type: Number })
   @ApiQuery({ name: 'dateTo', type: Number })

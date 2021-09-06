@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, UpdateQuery, UpdateWithAggregationPipeline } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { Injectable } from '@nestjs/common';
 import statisticsConstants from './games-constants';
@@ -19,8 +19,8 @@ export default class GamesRepository {
     return this.gameModel.create(games);
   }
 
-  finish(_id: ObjectId, winner: Winner, stats: Array<ObjectId>) {
-    return this.gameModel.updateOne({ _id, finished: false }, { finished: true, winner, stats });
+  updateByRoom(roomId: Number, update?: UpdateWithAggregationPipeline | UpdateQuery<GameEntity> | undefined,) {
+    return this.gameModel.updateOne({ roomId }, update);
   }
 
   getGameInfo(id: ObjectId) {
