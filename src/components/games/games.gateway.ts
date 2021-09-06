@@ -3,7 +3,6 @@ import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WsRes
 import { Socket } from 'socket.io';
 import { ActionType } from './enum/action-type.enum';
 import { GamesService } from './games.service';
-import { ActionEntity } from './schemas/game.schema';
 
 @WebSocketGateway({ transports: ['websocket'] })
 export class GamesGateway {
@@ -14,13 +13,23 @@ export class GamesGateway {
   private logger: Logger = new Logger(GamesGateway.name);
 
   @SubscribeMessage('joinRoom')
-  handleMessage(@ConnectedSocket() client: Socket, @MessageBody() { roomId }: any): WsResponse<unknown> {
+  handleJoin(@ConnectedSocket() client: Socket, @MessageBody() { roomId }: any): WsResponse<unknown> {
     this.logger.log(`Client ${client.id} connected to room ${roomId}`);
 
     client.join(roomId);
     client.broadcast.to(roomId);
 
     return { event: 'joinedRoom', data: {} };
+  }
+
+  @SubscribeMessage('leaveRoom')
+  handleLeave(@ConnectedSocket() client: Socket, @MessageBody() { roomId }: any): WsResponse<unknown> {
+    this.logger.log(`Client ${client.id} disconnected from room ${roomId}`);
+
+    client.leave(roomId);
+    client.broadcast.to(roomId);
+
+    return { event: 'leftRoom', data: {} };
   }
 
   @SubscribeMessage('startGame')
