@@ -1,16 +1,20 @@
-import { Document, Schema, Types } from 'mongoose';
+import { Document, Schema, SchemaTypes, Types } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { ObjectId } from 'mongodb';
 
 import gameConstants from '../games-constants';
-import { Winner } from '../enum/winner.enum';
 import statisticsConstants from '@components/statistics/statistics-constants';
 import userConstants from '@components/users/user-constants';
 import { GameStatus } from '../enum/game-status.enum';
+import { Teams } from '../enum/teams.enum';
 
 export class GameEntity extends Document {
   @ApiProperty({ type: String })
   readonly _id: Types.ObjectId = new ObjectId();
+
+  readonly players: any[] = [];
+
+  readonly title: String = '';
 }
 
 export class ActionEntity {
@@ -25,14 +29,6 @@ export class ActionEntity {
   readonly date: Date = new Date();
 }
 
-export const TeamSchema = new Schema({
-  players: {
-    type: [ObjectId],
-    ref: userConstants.models.users,
-    required: true
-  },
-});
-
 export const GameSchema = new Schema(
   {
     title: {
@@ -40,8 +36,8 @@ export const GameSchema = new Schema(
       default: '',
       required: true,
     },
-    teams: {
-      type: [TeamSchema],
+    players: {
+      type: [ObjectId],
       ref: userConstants.models.users,
       required: true,
     },
@@ -50,7 +46,7 @@ export const GameSchema = new Schema(
       ref: statisticsConstants.models.statistics
     },
     winner: {
-      type: Winner,
+      type: Teams,
     },
     status: {
       type: GameStatus,
@@ -71,6 +67,12 @@ export const GameSchema = new Schema(
     startedAt: {
       type: Date,
     },
+    finishedAt: {
+      type: Date,
+    },
+    score: {
+      type: [Number],
+    }
     // tournament: {
     //   type: ObjectId,
     //   ref: ,

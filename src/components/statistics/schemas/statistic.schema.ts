@@ -5,6 +5,7 @@ import { ObjectId } from 'mongodb';
 import statisticsConstants from '../statistics-constants';
 import userConstants from '@components/users/user-constants';
 import gamesConstants from '@components/games/games-constants';
+import { Teams } from '@components/games/enum/teams.enum';
 
 export class StatisticEntity extends Document {
   @ApiProperty({ type: String })
@@ -35,6 +36,9 @@ export const StatisticSchema = new Schema(
       type: ObjectId,
       ref: userConstants.models.users,
       required: true,
+    },
+    team: {
+      type: Teams,
     }
   },
   {
