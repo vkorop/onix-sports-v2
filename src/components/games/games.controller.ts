@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ParseObjectIdPipe } from '@pipes/objectId.pipe';
 import { ObjectId } from 'mongodb';
 import CreateGamesDto from './dto/create-game.dto';
-import FinishGameDto from './dto/finish-game.dto';
 import { GamesService } from './games.service';
 
 @ApiTags('Games')

@@ -5,7 +5,6 @@ import { Injectable } from '@nestjs/common';
 import statisticsConstants from './games-constants';
 import { GameEntity } from './schemas/game.schema';
 import CreateGameDto from './dto/create-game.dto';
-import { Winner } from './enum/winner.enum';
 
 
 @Injectable()
@@ -19,8 +18,8 @@ export default class GamesRepository {
     return this.gameModel.create(games);
   }
 
-  updateByRoom(roomId: Number, update?: UpdateWithAggregationPipeline | UpdateQuery<GameEntity> | undefined,) {
-    return this.gameModel.updateOne({ roomId }, update);
+  updateById(_id: Number, update?: UpdateWithAggregationPipeline | UpdateQuery<GameEntity> | undefined,) {
+    return this.gameModel.findByIdAndUpdate(_id, update);
   }
 
   getActions(roomId: Number) {

@@ -6,9 +6,12 @@ import { GameSchema } from './schemas/game.schema';
 import GamesRepository from './games.repository';
 import gamesConstants from './games-constants';
 import { GamesGateway } from './games.gateway';
+import { GameProcessService } from './game-process.service';
+import { StatisticsModule } from '@components/statistics/statistics.module';
 
 @Module({
   imports: [
+    StatisticsModule,
     MongooseModule.forFeature([
       {
         name: gamesConstants.models.games,
@@ -18,7 +21,7 @@ import { GamesGateway } from './games.gateway';
     ]),
   ],
   controllers: [GamesController],
-  providers: [GamesService, GamesRepository, GamesGateway],
+  providers: [GamesService, GamesRepository, GamesGateway, GameProcessService],
   exports: [GamesService, GamesRepository],
 })
 export class GamesModule {}
