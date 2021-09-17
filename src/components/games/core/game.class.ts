@@ -5,6 +5,7 @@ import { Teams } from "../enum/teams.enum";
 import { gameEvent } from "../utils/event.util";
 import { Action } from "./action.class";
 import { Player } from "./player.class";
+import { Players } from "./players-list.class";
 
 const TEAMS_ORDER = [Teams.red, Teams.red, Teams.blue, Teams.blue]
 const POSITIONS_ORDER = [Positions.goalkeeper, Positions.forward, Positions.goalkeeper, Positions.forward];
@@ -12,7 +13,7 @@ const POSITIONS_ORDER = [Positions.goalkeeper, Positions.forward, Positions.goal
 export class Game {
   id: any;
   private title: string = '';
-  private players: Player[] = [];
+  private players: Players = new Players([]);
   private actions: Action[] = [];
   private score = { [Teams.red]: 0, [Teams.blue]: 0 };
   private status: GameStatus = GameStatus.STARTED;
@@ -23,17 +24,16 @@ export class Game {
   emiter: EventEmitter = new EventEmitter();
 
   constructor({ id, teams, title, emiter }: any) {
-    this.players = teams.map(({ _id, name }: any, i: number) => new Player({
+    const _players = teams.map(({ _id, name }: any, i: number) => new Player({
       _id,
       name,
       team: TEAMS_ORDER[i],
       position: POSITIONS_ORDER[i],
     }));
 
-    console.log(this.players);
-
     this.id = id;
     this.title = title;
+    this.players = new Players(_players);
     this.emiter = emiter;
   }
 
@@ -50,9 +50,7 @@ export class Game {
   }
 
   public goal(id: any) {
-    const player = this.players.find(({ _id }: any) => _id == id);
-
-    if (!player) throw new Error('Player was not found');
+    const player = this.players.get(id);
 
     player.goal();
 
@@ -71,7 +69,7 @@ export class Game {
     return { 
       id: this.id,
       title: this.title,
-      players: this.players,
+      players: this.players.toArray(),
       actions: this.actions,
       score: this.score,
       status: this.status,

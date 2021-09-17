@@ -2,8 +2,6 @@ import { StatisticsService } from "@components/statistics/statistics.service";
 import { Injectable } from "@nestjs/common";
 import { EventEmitter } from "stream";
 import { Game } from "./core/game.class";
-import { ActionType } from "./enum/action-type.enum";
-import { Positions } from "./enum/positions.enum";
 import { Teams } from "./enum/teams.enum";
 import GamesRepository from "./games.repository";
 import { gameEvent } from "./utils/event.util";
@@ -19,8 +17,12 @@ export class GameProcessService {
   private games: {[key: string]: Game} = {};
   private emiter: EventEmitter = new EventEmitter();
 
+  get Emiter() {
+    return this.emiter;
+  }
+
   private appendGame(game: Game) {
-    game.emiter.once(gameEvent(game.id, 'finish'), () => {
+    this.emiter.once(gameEvent(game.id, 'finish'), () => {
       this.finish(game);
       this.removeGame(game.id);
     })
@@ -42,9 +44,6 @@ export class GameProcessService {
 
   public async start(id: any) {
     const gameInfo = await this.gameRepository.getGameInfo(id);
-    
-    if (!gameInfo) throw new Error('Game was not found');
-    
     const game: Game = Game.create({ 
       id, 
       teams: gameInfo.players,
@@ -90,5 +89,7 @@ export class GameProcessService {
         finishedAt: info.finishedAt,
       }
     });
+
+    this.emiter.emit('finished', { id: info.id });
   }
 }

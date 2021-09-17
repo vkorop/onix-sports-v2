@@ -26,7 +26,11 @@ export default class GamesRepository {
     return this.gameModel.findOne({ roomId }).select('actions');
   }
 
-  getGameInfo(id: ObjectId) {
-    return this.gameModel.findById(id).populate('teams.players stats');
+  async getGameInfo(id: ObjectId) {
+    const game = await this.gameModel.findById(id).populate('teams.players stats');
+
+    if (!game) throw new Error('Game was not found');
+
+    return game;
   }
 }
