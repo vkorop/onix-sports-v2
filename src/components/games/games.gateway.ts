@@ -1,9 +1,11 @@
-import { Logger } from '@nestjs/common';
+import { WsExceptionFilter } from '@filters/ws-exception.filter';
+import { Logger, UseFilters } from '@nestjs/common';
 import { MessageBody, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { EventEmitter } from 'stream';
 import { GameProcessService } from './game-process.service';
 
+@UseFilters(new WsExceptionFilter())
 @WebSocketGateway({ transports: ['websocket'] })
 export class GamesGateway implements OnGatewayInit {
   constructor(

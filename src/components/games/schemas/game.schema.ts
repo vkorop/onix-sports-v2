@@ -72,7 +72,10 @@ export const GameSchema = new Schema(
     },
     score: {
       type: [Number],
-    }
+    },
+    duration: {
+      type: Number,
+    },
     // tournament: {
     //   type: ObjectId,
     //   ref: ,

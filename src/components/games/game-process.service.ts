@@ -118,6 +118,7 @@ export class GameProcessService {
         winner: info.winner,
         startedAt: info.startedAt,
         finishedAt: info.finishedAt,
+        duration: info.finishedAt.valueOf() - info.startedAt.valueOf(),
       }
     });
   }

@@ -1,5 +1,6 @@
 import { GamesModule } from '@components/games/games.module';
 import { StatisticsModule } from '@components/statistics/statistics.module';
+import { TournamentModule } from '@components/tournaments/tournament.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -28,6 +29,7 @@ import { AppService } from './app.service';
     }),
     StatisticsModule,
     GamesModule,
+    TournamentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
