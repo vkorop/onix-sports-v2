@@ -44,6 +44,7 @@ export class GameProcessService {
 
   public async start(id: any) {
     const gameInfo = await this.gameRepository.getGameInfo(id);
+
     const game: Game = Game.create({ 
       id, 
       teams: gameInfo.players,
@@ -53,15 +54,39 @@ export class GameProcessService {
 
     this.appendGame(game);
 
-    return game.info();
+    await this.saveGame(id, game.info());
   }
 
   public goal(id: any, playerId: any) {
-    return this.getGame(id).goal(playerId);
+    return this.getGame(id)
+      .goal(playerId)
+      .info();
   }
 
   public info(id: any) {
     return this.getGame(id).info();
+  }
+
+  public async pause(id: any) {
+    const info = this.getGame(id).pause().info();
+
+    await this.saveGame(id, info);
+
+    return info;
+  }
+
+  public async unpause(id: any) {
+    const info = this.getGame(id).unpause().info();
+
+    await this.saveGame(id, info);
+
+    return info;
+  }
+
+  public swap(id: any, playerId: any) {
+    return this.getGame(id)
+      .swap(playerId)
+      .info();
   }
 
   private async finish(game: Game) {
@@ -78,9 +103,15 @@ export class GameProcessService {
 
     const statsEntities = await this.statisticService.saveStats(stats);
 
-    await this.gameRepository.updateById(game.id, {
+    await this.saveGame(game.id, info, statsEntities.map(e => e._id));
+
+    this.emiter.emit('finished', { id: info.id });
+  }
+
+  private saveGame(id: any, info: any, stats: any[] = []) {
+    return this.gameRepository.updateById(id, {
       $set: {
-        stats: statsEntities.map(e => e._id),
+        stats,
         actions: info.actions,
         score: [info.score[Teams.red], info.score[Teams.blue]],
         status: info.status,
@@ -89,7 +120,5 @@ export class GameProcessService {
         finishedAt: info.finishedAt,
       }
     });
-
-    this.emiter.emit('finished', { id: info.id });
   }
 }

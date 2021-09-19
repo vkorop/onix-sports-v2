@@ -28,13 +28,38 @@ export class GamesGateway implements OnGatewayInit {
 
   @SubscribeMessage('start')
   public async start(@MessageBody() { id }: any): Promise<WsResponse> {
-    const game = await this.gameProcessService.start(id);
+    await this.gameProcessService.start(id);
 
-    return { event: 'started', data: game };
+    const data = this.gameProcessService.info(id);
+
+    return { event: 'started', data };
   }
 
   @SubscribeMessage('goal')
-  public goal(@MessageBody() { id, playerId }: any) {
-    this.gameProcessService.goal(id, playerId);
+  public goal(@MessageBody() { id, playerId }: any): WsResponse {
+    const data = this.gameProcessService.goal(id, playerId);
+
+    return { event: 'score', data };
+  }
+
+  @SubscribeMessage('pause')
+  public async pause(@MessageBody() { id }: any): Promise<WsResponse> {
+    const data = await this.gameProcessService.pause(id);
+
+    return { event: 'paused', data };
+  }
+
+  @SubscribeMessage('unpause')
+  public async unpause(@MessageBody() { id }: any): Promise<WsResponse> {
+    const data = await this.gameProcessService.unpause(id);
+
+    return { event: 'paused', data };
+  }
+
+  @SubscribeMessage('swap')
+  public swap(@MessageBody() { id, playerId }: any): WsResponse {
+    const data = this.gameProcessService.swap(id, playerId);
+
+    return { event: 'swapped', data };
   }
 }

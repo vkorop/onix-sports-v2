@@ -1,7 +1,8 @@
+import { Teams } from "../enum/teams.enum";
 import { Player } from "./player.class";
 
 export class Players {
-    players: Player[] = [];
+    private players: Player[] = [];
 
     constructor(players: Player[]) {
         this.players = players;
@@ -9,6 +10,15 @@ export class Players {
 
     public get(id: any) {
         const player = this.players.find(({ _id }: any) => _id == id);
+
+        if (!player) throw new Error('Player was not found');
+
+        return player;
+    }
+
+    public getTeamate(id: any) {
+        const _team = this.get(id).team;
+        const player = this.players.find(({ _id, team }: any) => _id != id && team == _team);
 
         if (!player) throw new Error('Player was not found');
 

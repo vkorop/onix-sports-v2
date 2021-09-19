@@ -3,4 +3,5 @@ export enum GameStatus {
   STARTED = 'STARTED',
   PAUSED = 'PAUSED',
   FINISHED = 'FINISHED',
+  UNPAUSED = 'UNPAUSED',
 }
