@@ -2,8 +2,6 @@ import { StatisticsService } from "@components/statistics/statistics.service";
 import { Injectable } from "@nestjs/common";
 import { EventEmitter } from "stream";
 import { Game } from "./core/game.class";
-import { ActionType } from "./enum/action-type.enum";
-import { Positions } from "./enum/positions.enum";
 import { Teams } from "./enum/teams.enum";
 import GamesRepository from "./games.repository";
 import { gameEvent } from "./utils/event.util";
@@ -19,8 +17,12 @@ export class GameProcessService {
   private games: {[key: string]: Game} = {};
   private emiter: EventEmitter = new EventEmitter();
 
+  get Emiter() {
+    return this.emiter;
+  }
+
   private appendGame(game: Game) {
-    game.emiter.once(gameEvent(game.id, 'finish'), () => {
+    this.emiter.once(gameEvent(game.id, 'finish'), () => {
       this.finish(game);
       this.removeGame(game.id);
     })
@@ -42,9 +44,7 @@ export class GameProcessService {
 
   public async start(id: any) {
     const gameInfo = await this.gameRepository.getGameInfo(id);
-    
-    if (!gameInfo) throw new Error('Game was not found');
-    
+
     const game: Game = Game.create({ 
       id, 
       teams: gameInfo.players,
@@ -54,15 +54,39 @@ export class GameProcessService {
 
     this.appendGame(game);
 
-    return game.info();
+    await this.saveGame(id, game.info());
   }
 
   public goal(id: any, playerId: any) {
-    return this.getGame(id).goal(playerId);
+    return this.getGame(id)
+      .goal(playerId)
+      .info();
   }
 
   public info(id: any) {
     return this.getGame(id).info();
+  }
+
+  public async pause(id: any) {
+    const info = this.getGame(id).pause().info();
+
+    await this.saveGame(id, info);
+
+    return info;
+  }
+
+  public async unpause(id: any) {
+    const info = this.getGame(id).unpause().info();
+
+    await this.saveGame(id, info);
+
+    return info;
+  }
+
+  public swap(id: any, playerId: any) {
+    return this.getGame(id)
+      .swap(playerId)
+      .info();
   }
 
   private async finish(game: Game) {
@@ -79,9 +103,15 @@ export class GameProcessService {
 
     const statsEntities = await this.statisticService.saveStats(stats);
 
-    await this.gameRepository.updateById(game.id, {
+    await this.saveGame(game.id, info, statsEntities.map(e => e._id));
+
+    this.emiter.emit('finished', { id: info.id });
+  }
+
+  private saveGame(id: any, info: any, stats: any[] = []) {
+    return this.gameRepository.updateById(id, {
       $set: {
-        stats: statsEntities.map(e => e._id),
+        stats,
         actions: info.actions,
         score: [info.score[Teams.red], info.score[Teams.blue]],
         status: info.status,
