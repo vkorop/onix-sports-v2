@@ -43,12 +43,12 @@ export class GameProcessService {
   } 
 
   public async start(id: any) {
-    const gameInfo = await this.gameRepository.getGameInfo(id);
+    const { players, title } = await this.gameRepository.getGameInfo(id);
 
     const game: Game = Game.create({ 
       id, 
-      teams: gameInfo.players,
-      title: gameInfo.title,
+      teams: [...players.red, ...players.blue],
+      title,
       emiter: this.emiter,
     });
 

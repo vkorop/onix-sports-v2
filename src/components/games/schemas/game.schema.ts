@@ -7,12 +7,14 @@ import statisticsConstants from '@components/statistics/statistics-constants';
 import userConstants from '@components/users/user-constants';
 import { GameStatus } from '../enum/game-status.enum';
 import { Teams } from '../enum/teams.enum';
+import { Players, PlayersDto } from '../dto/players.dto';
 
 export class GameEntity extends Document {
   @ApiProperty({ type: String })
   readonly _id: Types.ObjectId = new ObjectId();
 
-  readonly players: any[] = [];
+  @ApiProperty({ type: PlayersDto })
+  readonly players: PlayersDto = new PlayersDto();
 
   readonly title: String = '';
 }
@@ -37,7 +39,7 @@ export const GameSchema = new Schema(
       required: true,
     },
     players: {
-      type: [ObjectId],
+      type: { red: [ObjectId], blue: [ObjectId] },
       ref: userConstants.models.users,
       required: true,
     },

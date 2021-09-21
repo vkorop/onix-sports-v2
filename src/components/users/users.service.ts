@@ -8,8 +8,8 @@ export class UsersService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  getAll() {
-    return this.usersRepository.getAll();
+  getAll(limit: number = 0, skip: number = 0) {
+    return this.usersRepository.getAll(limit, skip);
   }
 
   getUser(id: ObjectId) {

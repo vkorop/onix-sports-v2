@@ -16,4 +16,8 @@ export class GamesService {
   public getGameInfo(id: ObjectId) {
     return this.gamesRepository.getGameInfo(id);
   }
+
+  public getGames(limit: number = 0, skip: number = 0) {
+    return this.gamesRepository.getGames(limit, skip);
+  }
 }

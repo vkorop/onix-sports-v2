@@ -27,10 +27,14 @@ export default class GamesRepository {
   }
 
   async getGameInfo(id: ObjectId) {
-    const game = await this.gameModel.findById(id).populate('teams.players stats');
+    const game = await this.gameModel.findById(id).populate('players stats');
 
     if (!game) throw new Error('Game was not found');
 
     return game;
+  }
+
+  getGames(limit: number, skip: number) {
+    return this.gameModel.find().skip(skip).limit(limit);
   }
 }
