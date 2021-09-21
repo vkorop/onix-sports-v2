@@ -1,9 +1,12 @@
-import { Logger } from '@nestjs/common';
+import { WsExceptionFilter } from '@filters/ws-exception.filter';
+import { Logger, UseFilters } from '@nestjs/common';
 import { MessageBody, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { EventEmitter } from 'stream';
+import { GameEventDto } from './dto/game-event.dto';
 import { GameProcessService } from './game-process.service';
 
+@UseFilters(new WsExceptionFilter())
 @WebSocketGateway({ transports: ['websocket'] })
 export class GamesGateway implements OnGatewayInit {
   constructor(
@@ -27,7 +30,7 @@ export class GamesGateway implements OnGatewayInit {
   }
 
   @SubscribeMessage('start')
-  public async start(@MessageBody() { id }: any): Promise<WsResponse> {
+  public async start(@MessageBody('id') id: string): Promise<WsResponse> {
     await this.gameProcessService.start(id);
 
     const data = this.gameProcessService.info(id);
@@ -36,28 +39,28 @@ export class GamesGateway implements OnGatewayInit {
   }
 
   @SubscribeMessage('goal')
-  public goal(@MessageBody() { id, playerId }: any): WsResponse {
+  public goal(@MessageBody() { id, playerId }: GameEventDto): WsResponse {
     const data = this.gameProcessService.goal(id, playerId);
 
     return { event: 'score', data };
   }
 
   @SubscribeMessage('pause')
-  public async pause(@MessageBody() { id }: any): Promise<WsResponse> {
+  public async pause(@MessageBody('id') id: string): Promise<WsResponse> {
     const data = await this.gameProcessService.pause(id);
 
     return { event: 'paused', data };
   }
 
   @SubscribeMessage('unpause')
-  public async unpause(@MessageBody() { id }: any): Promise<WsResponse> {
+  public async unpause(@MessageBody('id') id: string): Promise<WsResponse> {
     const data = await this.gameProcessService.unpause(id);
 
     return { event: 'paused', data };
   }
 
   @SubscribeMessage('swap')
-  public swap(@MessageBody() { id, playerId }: any): WsResponse {
+  public swap(@MessageBody() { id, playerId }: GameEventDto): WsResponse {
     const data = this.gameProcessService.swap(id, playerId);
 
     return { event: 'swapped', data };
