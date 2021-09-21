@@ -19,18 +19,6 @@ export class GameEntity extends Document {
   readonly title: String = '';
 }
 
-export class ActionEntity {
-  constructor({ type, playerId }: any) {
-    this.type = type;
-    this.playerId = playerId;
-    this.date = new Date();
-  }
-
-  readonly type: string = '';
-  readonly playerId: ObjectId = new ObjectId();
-  readonly date: Date = new Date();
-}
-
 export const GameSchema = new Schema(
   {
     title: {

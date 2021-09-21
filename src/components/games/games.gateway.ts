@@ -4,7 +4,6 @@ import { MessageBody, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSock
 import { Server } from 'socket.io';
 import { EventEmitter } from 'stream';
 import { GameEventDto } from './dto/game-event.dto';
-import { GameIdDto } from './dto/start-game.dto';
 import { GameProcessService } from './game-process.service';
 
 @UseFilters(new WsExceptionFilter())
