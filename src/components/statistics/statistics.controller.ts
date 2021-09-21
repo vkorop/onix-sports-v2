@@ -14,8 +14,8 @@ export class StatisticsController {
   ) {}
 
   @ApiQuery({ name: 'ids', type: [String] })
-  @ApiQuery({ name: 'dateFrom', type: Number })
-  @ApiQuery({ name: 'dateTo', type: Number })
+  @ApiQuery({ name: 'dateFrom', type: Number, required: false })
+  @ApiQuery({ name: 'dateTo', type: Number, required: false })
   @Get('/')
   public getStats(
     @Query('ids', ObjectIdsPipe) ids: ObjectId[],
