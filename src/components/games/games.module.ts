@@ -8,6 +8,7 @@ import gamesConstants from './games-constants';
 import { GamesGateway } from './games.gateway';
 import { GameProcessService } from './game-process.service';
 import { StatisticsModule } from '@components/statistics/statistics.module';
+import { GamesGatewayDoc } from './games.gateway.doc';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { StatisticsModule } from '@components/statistics/statistics.module';
       },
     ]),
   ],
-  controllers: [GamesController],
+  controllers: [GamesController, GamesGatewayDoc],
   providers: [GamesService, GamesRepository, GamesGateway, GameProcessService],
   exports: [GamesService, GamesRepository],
 })

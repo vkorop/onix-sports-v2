@@ -1,4 +1,4 @@
-import { Document, Schema, SchemaTypes, Types } from 'mongoose';
+import { Document, Schema, Types } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { ObjectId } from 'mongodb';
 
@@ -7,14 +7,14 @@ import statisticsConstants from '@components/statistics/statistics-constants';
 import userConstants from '@components/users/user-constants';
 import { GameStatus } from '../enum/game-status.enum';
 import { Teams } from '../enum/teams.enum';
-import { Players, PlayersDto } from '../dto/players.dto';
+import { PlayersDto } from '../dto/players.dto';
 
 export class GameEntity extends Document {
   @ApiProperty({ type: String })
   readonly _id: Types.ObjectId = new ObjectId();
 
   @ApiProperty({ type: PlayersDto })
-  readonly players: PlayersDto = new PlayersDto();
+  readonly players: ObjectId[] = [new ObjectId()];
 
   readonly title: String = '';
 }
@@ -39,7 +39,7 @@ export const GameSchema = new Schema(
       required: true,
     },
     players: {
-      type: { red: [ObjectId], blue: [ObjectId] },
+      type: [ObjectId],
       ref: userConstants.models.users,
       required: true,
     },

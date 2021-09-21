@@ -1,0 +1,7 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { GameIdDto } from "./start-game.dto";
+
+export class GameEventDto extends GameIdDto {
+  @ApiProperty({ type: String })
+  readonly playerId: string = '';
+}

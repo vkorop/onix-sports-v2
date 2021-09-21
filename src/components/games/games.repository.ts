@@ -26,8 +26,9 @@ export default class GamesRepository {
     return this.gameModel.findOne({ roomId }).select('actions');
   }
 
-  async getGameInfo(id: ObjectId) {
-    const game = await this.gameModel.findById(id).populate('players stats');
+  async getGameInfo(id: ObjectId | String) {
+    const game = await this.gameModel.findById(id)
+      .populate('players stats');
 
     if (!game) throw new Error('Game was not found');
 

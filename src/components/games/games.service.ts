@@ -10,6 +10,7 @@ export class GamesService {
   ) {}
 
   public createGames(games: CreateGamesDto[]) {
+    console.log(games);
     return this.gamesRepository.create(games);
   }
 
