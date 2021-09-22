@@ -1,3 +1,4 @@
+import { TournamentService } from '@components/tournaments/tournament.service';
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ParseNumberPipe } from '@pipes/number.pipe';
@@ -11,6 +12,7 @@ import { GamesService } from './games.service';
 export class GamesController {
   constructor(
     private readonly gameService: GamesService,
+    private readonly tournamentService: TournamentService,
   ) {}
 
   @Get('/:id')
@@ -23,8 +25,19 @@ export class GamesController {
 
   @Post('/')
   @ApiBody({ type: [CreateGamesDto] })
-  public async createGames(@Body() games: CreateGamesDto[]) {
-    return this.gameService.createGames(games);
+  public async createGames(@Body() gamesDto: CreateGamesDto[]) {
+    const games = await this.gameService.createGames(gamesDto);
+
+    const promises = games.map((game) => {
+      if (game.tournament) {
+        return this.tournamentService.pushGame(game.tournament, game);
+      }
+      return new Promise((resolve) => resolve({}));
+    }) 
+
+    await Promise.all(promises);
+
+    return games;
   }
 
   @ApiQuery({

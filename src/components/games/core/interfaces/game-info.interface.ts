@@ -13,4 +13,5 @@ export interface GameInfo {
   winner: Teams,
   startedAt: Date,
   finishedAt: Date,
+  duration: number,
 }

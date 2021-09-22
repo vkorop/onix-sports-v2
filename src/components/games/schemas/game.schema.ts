@@ -8,6 +8,8 @@ import userConstants from '@components/users/user-constants';
 import { GameStatus } from '../enum/game-status.enum';
 import { Teams } from '../enum/teams.enum';
 import { PlayersDto } from '../dto/players.dto';
+import { TournamentConstants } from '@components/tournaments/tournament.constants';
+import { StringObjectId } from '@components/common/types/string-objectid.type';
 
 export class GameEntity extends Document {
   @ApiProperty({ type: String })
@@ -17,6 +19,9 @@ export class GameEntity extends Document {
   readonly players: ObjectId[] = [new ObjectId()];
 
   readonly title: String = '';
+
+  @ApiProperty({ type: String })
+  readonly tournament: StringObjectId = '';
 }
 
 export const GameSchema = new Schema(
@@ -42,10 +47,6 @@ export const GameSchema = new Schema(
       type: GameStatus,
       default: GameStatus.DRAFT,
     },
-    roomId: {
-      type: Number,
-      default: Date.now()
-    },
     watchers: {
       type: [ObjectId],
       default: [],
@@ -66,10 +67,10 @@ export const GameSchema = new Schema(
     duration: {
       type: Number,
     },
-    // tournament: {
-    //   type: ObjectId,
-    //   ref: ,
-    // },
+    tournament: {
+      type: ObjectId,
+      ref: TournamentConstants.models.tournaments,
+    },
   },
   {
     versionKey: false,

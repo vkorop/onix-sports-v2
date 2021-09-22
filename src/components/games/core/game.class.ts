@@ -22,6 +22,9 @@ export class Game {
   private winner: Teams = Teams.red;
   private startedAt = new Date();
   private finishedAt: Date = new Date();
+  private totalPauseDuration: number = 0;
+  private lastPauseDate: number = 0;
+  private duration: number = 0;
 
   emiter: EventEmitter = new EventEmitter();
 
@@ -72,14 +75,18 @@ export class Game {
   public pause() {
     this.status = GameStatus.PAUSED;
 
+    this.lastPauseDate = new Date().valueOf();
     this.pushAction({ type: ActionType.PAUSE });
 
     return this;
   }
 
   public unpause() {
+    if (this.status === GameStatus.PAUSED) return this;
+
     this.status = GameStatus.UNPAUSED;
 
+    this.totalPauseDuration += Date.now() - this.lastPauseDate;
     this.pushAction({ type: ActionType.RESUME });
 
     return this;
@@ -111,6 +118,8 @@ export class Game {
     this.finishedAt = new Date();
     this.status = GameStatus.FINISHED;
 
+    this.duration = this.finishedAt.valueOf() - this.startedAt.valueOf() - this.totalPauseDuration;
+
     this.emiter.emit(gameEvent(this.id, 'finish'));
 
     this.pushAction({ type: ActionType.FINISH, info: this.info() });
@@ -127,6 +136,7 @@ export class Game {
       winner: this.winner,
       startedAt: this.startedAt,
       finishedAt: this.finishedAt,
+      duration: this.duration,
     };
   }
 }
