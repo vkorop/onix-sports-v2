@@ -10,11 +10,13 @@ import { GameProcessService } from './game-process.service';
 import { StatisticsModule } from '@components/statistics/statistics.module';
 import { GamesGatewayDoc } from './games.gateway.doc';
 import { ActionModule } from '@components/action/action.module';
+import { TournamentModule } from '@components/tournaments/tournament.module';
 
 @Module({
   imports: [
     StatisticsModule,
     ActionModule,
+    TournamentModule,
     MongooseModule.forFeature([
       {
         name: gamesConstants.models.games,

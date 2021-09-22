@@ -2,6 +2,9 @@ import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { TournamentSchema } from "./schemas/tournament.schema";
 import { TournamentConstants } from "./tournament.constants";
+import { TournamentController } from "./tournament.controller";
+import { TournamentRepository } from "./tournament.repository";
+import { TournamentService } from "./tournament.service";
 
 @Module({
   imports: [
@@ -12,6 +15,9 @@ import { TournamentConstants } from "./tournament.constants";
         schema: TournamentSchema,
       }
     ])
-  ]
+  ],
+  controllers: [TournamentController],
+  providers: [TournamentService, TournamentRepository],
+  exports: [TournamentService],
 })
 export class TournamentModule {}

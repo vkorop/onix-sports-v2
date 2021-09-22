@@ -40,9 +40,6 @@ export const StatisticSchema = new Schema(
     team: {
       type: Teams,
     },
-    actions: {
-      type: [],
-    },
   },
   {
     versionKey: false,

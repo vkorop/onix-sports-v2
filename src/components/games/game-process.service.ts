@@ -7,6 +7,7 @@ import { Teams } from "./enum/teams.enum";
 import GamesRepository from "./games.repository";
 import { gameEvent } from "./utils/event.util";
 import { ObjectId } from 'mongodb';
+import { GameInfo } from "./core/interfaces/game-info.interface";
 
 @Injectable()
 export class GameProcessService {
@@ -118,7 +119,7 @@ export class GameProcessService {
     this.emiter.emit('finished', { id: info.id });
   }
 
-  private saveGame(id: any, info: any, stats: ObjectId[] = [], actions: ObjectId[] = []) {
+  private saveGame(id: any, info: GameInfo, stats: ObjectId[] = [], actions: ObjectId[] = []) {
     return this.gameRepository.updateById(id, {
       $set: {
         stats,
@@ -128,7 +129,7 @@ export class GameProcessService {
         winner: info.winner,
         startedAt: info.startedAt,
         finishedAt: info.finishedAt,
-        duration: info.finishedAt.valueOf() - info.startedAt.valueOf(),
+        duration: info.duration,
       }
     });
   }
