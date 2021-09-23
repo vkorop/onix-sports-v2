@@ -1,59 +1,31 @@
-import { Document, Schema, Types } from 'mongoose';
-import { ApiProperty } from '@nestjs/swagger';
-import { ObjectId } from 'mongodb';
+import { Document } from 'mongoose';
 
 import { RolesEnum } from '@decorators/roles.decorator';
 import usersConstants from '../user-constants';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-export class UserEntity extends Document {
-  @ApiProperty({ type: String })
-  readonly _id: Types.ObjectId = new ObjectId();
+@Schema({
+  versionKey: false,
+  timestamps: true,
+  collection: usersConstants.models.users,
+})
+export class User {
+  @Prop({ type: String, required: true })
+  name: string = '';
 
-  @ApiProperty({ type: String })
-  readonly name: string = '';
+  @Prop({ type: String, required: true, unique: true })
+  email: string = '';
 
-  @ApiProperty({ type: String })
-  readonly email: string = '';
+  @Prop({ type: String, required: true })
+  password: string = '';
 
-  @ApiProperty({ type: String })
-  readonly password: string = '';
+  @Prop({ type: String, default: true })
+  verified: boolean = true;
 
-  @ApiProperty({ type: Boolean })
-  readonly verified: boolean = true;
+  @Prop({ type: RolesEnum, default: RolesEnum.user })
+    role: RolesEnum = RolesEnum.user;
+};
 
-  @ApiProperty({ type: 'enum', enum: RolesEnum })
-  readonly role: RolesEnum = RolesEnum.user;
-}
+export type UserEntity = User & Document;
 
-export const UserSchema = new Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      unique: true,
-      required: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    verified: {
-      type: Boolean,
-      default: true,
-      required: true,
-    },
-    role: {
-      type: RolesEnum,
-      default: RolesEnum.user,
-      required: true,
-    }
-  },
-  {
-    versionKey: false,
-    timestamps: true,
-    collection: usersConstants.models.users,
-  },
-);
+export const UserSchema = SchemaFactory.createForClass(User);

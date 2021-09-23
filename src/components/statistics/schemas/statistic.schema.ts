@@ -1,49 +1,37 @@
-import { Document, Schema, Types } from 'mongoose';
-import { ApiProperty } from '@nestjs/swagger';
+import { Document } from 'mongoose';
 import { ObjectId } from 'mongodb';
 
 import statisticsConstants from '../statistics-constants';
 import userConstants from '@components/users/user-constants';
 import gamesConstants from '@components/games/games-constants';
 import { Teams } from '@components/games/enum/teams.enum';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-export class StatisticEntity extends Document {
-  @ApiProperty({ type: String })
-  readonly _id: Types.ObjectId = new ObjectId();
-}
+@Schema({
+  versionKey: false,
+  timestamps: true,
+  collection: statisticsConstants.models.statistics,
+})
+export class Statistic {
+  @Prop({ type: Number, default: 0 })
+  mGoals: Number;
 
-export const StatisticSchema = new Schema(
-  {
-    mGoals: {
-      type: Number,
-      defaults: 0,
-      required: true,
-    },
-    rGoals: {
-      type: Number,
-      defaults: 0,
-      required: true,
-    },
-    won: {
-      type: Boolean,
-      required: true,
-    },
-    game: {
-      type: ObjectId,
-      ref: gamesConstants.models.games,
-    },
-    user: {
-      type: ObjectId,
-      ref: userConstants.models.users,
-      required: true,
-    },
-    team: {
-      type: Teams,
-    },
-  },
-  {
-    versionKey: false,
-    timestamps: true,
-    collection: statisticsConstants.models.statistics,
-  },
-);
+  @Prop({ type: Number, default: 0 })
+  rGoals: Number;
+
+  @Prop({ type: Boolean, required: true })
+  won: Boolean;
+
+  @Prop({ type: ObjectId, ref: gamesConstants.models.games })
+  game: ObjectId;
+
+  @Prop({ type: ObjectId, required: true, ref: userConstants.models.users })
+  user: ObjectId;
+
+  @Prop({ type: Teams, required: true })
+  team: Teams;
+};
+
+export type StatisticEntity = Statistic & Document;
+
+export const StatisticSchema = SchemaFactory.createForClass(Statistic);
