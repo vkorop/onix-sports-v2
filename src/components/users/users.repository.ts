@@ -19,7 +19,7 @@ export default class UsersRepository {
   }
 
   getAll(limit: number, skip: number) {
-    return this.userModel.find({}, { password: 0 }).skip(limit).limit(limit);
+    return this.userModel.find({ verified: true }, { password: 0 }).skip(skip).limit(limit);
   }
 
   getUser(id: ObjectId) {

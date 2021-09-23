@@ -40,7 +40,7 @@ export const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    verifed: {
+    verified: {
       type: Boolean,
       default: true,
       required: true,
