@@ -11,6 +11,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
   versionKey: false,
   timestamps: true,
   collection: statisticsConstants.models.statistics,
+  strict: true,
 })
 export class Statistic {
   @Prop({ type: Number, default: 0 })

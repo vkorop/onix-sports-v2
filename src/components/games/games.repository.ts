@@ -18,7 +18,7 @@ export default class GamesRepository {
     return this.gameModel.create(games);
   }
 
-  updateById(_id: Number, update?: UpdateWithAggregationPipeline | UpdateQuery<GameEntity> | undefined,) {
+  updateById(_id: any, update?: UpdateWithAggregationPipeline | UpdateQuery<GameEntity> | undefined,) {
     return this.gameModel.findByIdAndUpdate(_id, update);
   }
 

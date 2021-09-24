@@ -1,7 +1,7 @@
 import { StringObjectId } from "@components/common/types/string-objectid.type";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, UpdateQuery, UpdateWithAggregationPipeline } from "mongoose";
+import { FilterQuery, Model, UpdateQuery, UpdateWithAggregationPipeline } from "mongoose";
 import { CreateTournamentDto } from "./dto/create-tournament.dto";
 import { TournamentDocument } from "./schemas/tournament.schema";
 import { TournamentConstants } from "./tournament.constants";
@@ -31,5 +31,9 @@ export class TournamentRepository {
 
   updateById(id: StringObjectId, update: UpdateWithAggregationPipeline | UpdateQuery<TournamentDocument>) {
     return this.tournamentModel.findByIdAndUpdate(id, update);
+  }
+
+  update(filter: FilterQuery<TournamentDocument>, update: UpdateWithAggregationPipeline | UpdateQuery<TournamentDocument>) {
+    return this.tournamentModel.updateOne(filter, update);
   }
 }

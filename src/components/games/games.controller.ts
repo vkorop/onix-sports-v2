@@ -1,8 +1,8 @@
-import { TournamentService } from '@components/tournaments/tournament.service';
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ParseNumberPipe } from '@pipes/number.pipe';
 import { ParseObjectIdPipe } from '@pipes/objectId.pipe';
+import { EventEmitter2 } from 'eventemitter2';
 import { ObjectId } from 'mongodb';
 import CreateGamesDto from './dto/create-game.dto';
 import { GamesService } from './games.service';
@@ -12,7 +12,8 @@ import { GamesService } from './games.service';
 export class GamesController {
   constructor(
     private readonly gameService: GamesService,
-    private readonly tournamentService: TournamentService,
+
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   @Get('/:id')
@@ -28,14 +29,7 @@ export class GamesController {
   public async createGames(@Body() gamesDto: CreateGamesDto[]) {
     const games = await this.gameService.createGames(gamesDto);
 
-    const promises = games.map((game) => {
-      if (game.tournament) {
-        return this.tournamentService.pushGame(game.tournament, game);
-      }
-      return new Promise((resolve) => resolve({}));
-    }) 
-
-    await Promise.all(promises);
+    await this.eventEmitter.emitAsync('games.created', { games: games.filter(({tournament}) => Boolean(tournament)) });
 
     return games;
   }

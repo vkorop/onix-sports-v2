@@ -20,4 +20,12 @@ export class GamesService {
   public getGames(limit: number = 0, skip: number = 0) {
     return this.gamesRepository.getGames(limit, skip);
   }
+
+  public pushStats(id: ObjectId, stats: ObjectId[]) {
+    return this.gamesRepository.updateById(id, { stats });
+  }
+
+  public pushActions(id: ObjectId, actions: ObjectId[]) {
+    return this.gamesRepository.updateById(id, { actions });
+  }
 }

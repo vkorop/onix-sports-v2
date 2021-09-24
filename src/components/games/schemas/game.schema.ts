@@ -16,11 +16,11 @@ import { StringObjectId } from '@components/common/types/string-objectid.type';
   collection: gameConstants.models.games,
 })
 export class Game {
-  @Prop({ type: Number, default: '' })
-  title: Number; 
+  @Prop({ type: String, default: '' })
+  title: String; 
 
-  @Prop({ type: ObjectId, required: true, ref: userConstants.models.users })
-  players: ObjectId;
+  @Prop({ type: [ObjectId], required: true, ref: userConstants.models.users })
+  players: ObjectId[];
 
   @Prop({ type: [ObjectId], ref: statisticsConstants.models.statistics })
   stats: ObjectId[];
