@@ -4,7 +4,7 @@ import { ObjectId } from "mongoose";
 
 export default class CreateGameDto {
     @ApiProperty({ type: String })
-    readonly title: string | null = '';
+    readonly title?: string | null = '';
 
     @ApiProperty({ type: [String] })
     readonly players: ObjectId[] = [];

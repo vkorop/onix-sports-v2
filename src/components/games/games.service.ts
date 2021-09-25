@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from 'eventemitter2';
 import { ObjectId } from 'mongodb';
 import CreateGamesDto from './dto/create-game.dto';
 import GamesRepository from './games.repository';
@@ -7,10 +8,16 @@ import GamesRepository from './games.repository';
 export class GamesService {
   constructor(
     private readonly gamesRepository: GamesRepository,
+
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  public createGames(games: CreateGamesDto[]) {
-    return this.gamesRepository.create(games);
+  public async createGames(games: CreateGamesDto[]) {
+    const _games = await this.gamesRepository.create(games);
+    
+    await this.eventEmitter.emitAsync('games.created', { games });
+
+    return _games;
   }
 
   public getGameInfo(id: ObjectId) {

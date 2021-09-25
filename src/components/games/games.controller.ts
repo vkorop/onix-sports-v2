@@ -2,7 +2,6 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ParseNumberPipe } from '@pipes/number.pipe';
 import { ParseObjectIdPipe } from '@pipes/objectId.pipe';
-import { EventEmitter2 } from 'eventemitter2';
 import { ObjectId } from 'mongodb';
 import CreateGamesDto from './dto/create-game.dto';
 import { GamesService } from './games.service';
@@ -12,8 +11,6 @@ import { GamesService } from './games.service';
 export class GamesController {
   constructor(
     private readonly gameService: GamesService,
-
-    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   @Get('/:id')
@@ -28,8 +25,6 @@ export class GamesController {
   @ApiBody({ type: [CreateGamesDto] })
   public async createGames(@Body() gamesDto: CreateGamesDto[]) {
     const games = await this.gameService.createGames(gamesDto);
-
-    await this.eventEmitter.emitAsync('games.created', { games: games.filter(({tournament}) => Boolean(tournament)) });
 
     return games;
   }
