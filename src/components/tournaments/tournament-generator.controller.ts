@@ -12,7 +12,7 @@ export class TournamentGeneratorController {
 
   @ApiBody({ type: GenerateTournamentDto })
   @Post('/generate')
-  public generateTournament(@Body() { title, ids }: GenerateTournamentDto) {
-    return this.tournamentGenerator.generate(ids, title);
+  public generateTournament(@Body() { title, players }: GenerateTournamentDto) {
+    return this.tournamentGenerator.generate(players, title);
   }
 }

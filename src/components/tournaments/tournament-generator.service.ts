@@ -36,7 +36,7 @@ export class TournamentGenerator {
     const _games: CreateGameDto[] = this.plans[ids.length] ? this.plans[ids.length](shuffled, _id) : [];
     const games = await this.gameService.createGames(_games);
 
-    this.eventEmitter.emit('tournament.generated', { games, tournament: { title, _id } });
+    await this.eventEmitter.emitAsync('tournament.generated', { games, tournament: { title, _id } });
 
     return { games, tournament: { title, _id } };
   }

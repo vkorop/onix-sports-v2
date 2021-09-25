@@ -6,5 +6,5 @@ export class GenerateTournamentDto {
   readonly title?: string;
 
   @ApiProperty({ type: [String], required: true })
-  readonly ids: ObjectId[];
+  readonly players: ObjectId[];
 }
