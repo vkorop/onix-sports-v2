@@ -1,4 +1,5 @@
 import { GamesModule } from "@components/games/games.module";
+import { UsersModule } from "@components/users/users.module";
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { TournamentSchema } from "./schemas/tournament.schema";
@@ -11,6 +12,7 @@ import { TournamentService } from "./tournament.service";
 
 @Module({
   imports: [
+    UsersModule,
     GamesModule,
     MongooseModule.forFeature([
       {

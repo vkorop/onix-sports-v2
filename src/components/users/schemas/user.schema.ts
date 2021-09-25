@@ -19,11 +19,11 @@ export class User {
   @Prop({ type: String, required: true })
   password: string = '';
 
-  @Prop({ type: String, default: true })
+  @Prop({ type: Boolean, default: true })
   verified: boolean = true;
 
   @Prop({ type: RolesEnum, default: RolesEnum.user })
-    role: RolesEnum = RolesEnum.user;
+  role: RolesEnum = RolesEnum.user;
 };
 
 export type UserEntity = User & Document;

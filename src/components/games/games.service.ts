@@ -12,9 +12,9 @@ export class GamesService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  public async createGames(_games: CreateGamesDto[]) {
-    const games = await this.gamesRepository.create(_games);
-    
+  public async createGames(_games: CreateGamesDto[], select?: any) {
+    const games = await this.gamesRepository.create(_games, select);
+
     await this.eventEmitter.emitAsync('games.created', { games });
 
     return games;

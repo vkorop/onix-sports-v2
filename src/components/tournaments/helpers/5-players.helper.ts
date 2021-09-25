@@ -1,24 +1,29 @@
+import { UserEntity } from "@components/users/schemas/user.schema";
 import { ObjectId } from "mongoose";
+import { TournamentType } from "../enum/tour-type.enum";
 
-export const fivePlayersPlan = (ids: ObjectId[], tournament: ObjectId) => ([
+export const fivePlayersTournament = (players: UserEntity[], tournament: ObjectId) => ({
+  type: TournamentType.FIVE_PLAYERS,
+  games: [
   {
-    players: [ids[0], ids[1], ids[2], ids[3]],
+    players: [players[0], players[1], players[2], players[3]],
     tournament,
   },
   {
-    players: [ids[0], ids[3], ids[1], ids[4]],
+    players: [players[0], players[3], players[1], players[4]],
     tournament,
   },
   {
-    players: [ids[1], ids[3], ids[2], ids[4]],
+    players: [players[1], players[3], players[2], players[4]],
     tournament,
   },
   {
-    players: [ids[0], ids[4], ids[2], ids[1]],
+    players: [players[0], players[4], players[2], players[1]],
     tournament,
   },
   {
-    players: [ids[0], ids[2], ids[4], ids[3]],
+    players: [players[0], players[2], players[4], players[3]],
     tournament,
-  },
-]);
+  }],
+  teams: [],
+});

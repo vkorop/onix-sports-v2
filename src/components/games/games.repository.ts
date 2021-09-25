@@ -14,8 +14,10 @@ export default class GamesRepository {
     private readonly gameModel: Model<GameEntity>
   ) {}
 
-  create(games: CreateGameDto[]) {
-    return this.gameModel.create(games);
+  async create(_games: CreateGameDto[], select?: any) {
+    const games = await this.gameModel.create(_games);
+
+    return this.gameModel.populate(games, { path: 'players', select });
   }
 
   updateById(_id: any, update?: UpdateWithAggregationPipeline | UpdateQuery<GameEntity> | undefined,) {

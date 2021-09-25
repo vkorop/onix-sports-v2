@@ -32,7 +32,7 @@ export class TournamentService {
         status: TournamentStatus.OPENED 
       }, { 
         $push: { games: _id },
-        $addToSet: { players } 
+        $addToSet: { players: players.map(({_id}: any) => _id) } 
       }));
     
     await Promise.all(promises);

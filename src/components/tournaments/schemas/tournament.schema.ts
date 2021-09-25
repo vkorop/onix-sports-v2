@@ -3,6 +3,7 @@ import userConstants from "@components/users/user-constants";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ObjectId } from "mongoose";
 import { TournamentStatus } from "../enum/tour-status.enum";
+import { TournamentType } from "../enum/tour-type.enum";
 
 @Schema({
   versionKey: false,
@@ -19,7 +20,10 @@ export class Tournament {
   games: ObjectId[] = [];
 
   @Prop({ default: TournamentStatus.OPENED })
-  status: TournamentStatus = TournamentStatus.OPENED;
+  status: TournamentStatus;
+
+  @Prop({ required: false })
+  type: TournamentType;
 };
 
 export type TournamentDocument = Tournament & Document;
