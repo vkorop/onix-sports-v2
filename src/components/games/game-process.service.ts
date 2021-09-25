@@ -6,6 +6,7 @@ import GamesRepository from "./games.repository";
 import { gameEvent } from "./utils/event.util";
 import { GameInfo } from "./core/interfaces/game-info.interface";
 import { EventEmitter2 } from "eventemitter2";
+import { GameStatus } from "./enum/game-status.enum";
 
 @Injectable()
 export class GameProcessService {
@@ -43,13 +44,15 @@ export class GameProcessService {
   } 
 
   public async start(id: String) {
-    const { players, title } = await this.gameRepository.getGameInfo(id);
+    const { players, title, status } = await this.gameRepository.getGameInfo(id);
+
+    if (status !== GameStatus.DRAFT) throw new Error('Game is already finished or started!');
 
     const game: Game = Game.create({ 
       id, 
       teams: players,
       title,
-      emiter: this.emiter,
+      emitter: this.emiter,
     });
 
     this.appendGame(game);
