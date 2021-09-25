@@ -39,8 +39,8 @@ export class GamesGateway implements OnGatewayInit {
   }
 
   @SubscribeMessage('goal')
-  public goal(@MessageBody() { id, playerId }: GameEventDto): WsResponse {
-    const data = this.gameProcessService.goal(id, playerId);
+  public goal(@MessageBody() { id, playerId, enemyId }: GameEventDto): WsResponse {
+    const data = this.gameProcessService.goal(id, playerId, enemyId);
 
     return { event: 'data', data };
   }

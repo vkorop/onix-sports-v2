@@ -60,9 +60,9 @@ export class GameProcessService {
     await this.saveGame(id, game.info());
   }
 
-  public goal(id: any, playerId: any) {
+  public goal(id: any, playerId: any, enemyId: any) {
     return this.getGame(id)
-      .goal(playerId)
+      .goal(playerId, enemyId)
       .info();
   }
 

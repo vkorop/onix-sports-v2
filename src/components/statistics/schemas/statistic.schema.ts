@@ -20,6 +20,12 @@ export class Statistic {
   @Prop({ type: Number, default: 0 })
   rGoals: Number;
 
+  @Prop({ type: Number, default: 0 })
+  amGoals: Number;
+
+  @Prop({ type: Number, default: 0 })
+  arGoals: Number;
+
   @Prop({ type: Boolean, required: true })
   won: Boolean;
 

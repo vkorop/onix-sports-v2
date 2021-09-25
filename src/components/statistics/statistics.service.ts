@@ -19,6 +19,8 @@ export class StatisticsService {
       user: player._id,
       mGoals: player.mGoals,
       rGoals: player.rGoals,
+      amGoals: player.amGoals,
+      arGoals: player.arGoals,
       team: player.team,
       won: player.team == info.winner,
       game: info.id,

@@ -61,13 +61,15 @@ export class Game {
     } 
   }
 
-  public goal(id: any) {
+  public goal(id: any, enemy?: any) {
     if (this.status === GameStatus.PAUSED) throw new Error('Game is paused!');
+    if (enemy) {
+      this.players.get(enemy).autogoal();
+    }
 
     const player = this.players.get(id);
 
     player.goal();
-
     this._score(player.team);
 
     // Needs to be moved somewhere
