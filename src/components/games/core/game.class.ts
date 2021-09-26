@@ -64,7 +64,11 @@ export class Game {
   public goal(id: any, enemy?: any) {
     if (this.status === GameStatus.PAUSED) throw new Error('Game is paused!');
     if (enemy) {
-      this.players.get(enemy).autogoal();
+      const player = this.players.get(enemy);
+      player.autogoal();
+
+      const type = player.position == Positions.forward ? ActionType.AMGOAL : ActionType.ARGOAL;
+      this.pushAction({ type, player });
     }
 
     const player = this.players.get(id);
@@ -74,7 +78,7 @@ export class Game {
 
     // Needs to be moved somewhere
     const type = player.position == Positions.forward ? ActionType.MGOAL : ActionType.RGOAL;
-    this.pushAction({ type, player: player });
+    this.pushAction({ type, player });
 
     return this;
   }
