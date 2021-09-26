@@ -35,34 +35,41 @@ export class GamesGateway implements OnGatewayInit {
 
     const data = this.gameProcessService.info(id);
 
-    return { event: 'started', data };
+    return { event: 'data', data };
   }
 
   @SubscribeMessage('goal')
-  public goal(@MessageBody() { id, playerId }: GameEventDto): WsResponse {
-    const data = this.gameProcessService.goal(id, playerId);
+  public goal(@MessageBody() { id, playerId, enemyId }: GameEventDto): WsResponse {
+    const data = this.gameProcessService.goal(id, playerId, enemyId);
 
-    return { event: 'score', data };
+    return { event: 'data', data };
   }
 
   @SubscribeMessage('pause')
   public async pause(@MessageBody('id') id: string): Promise<WsResponse> {
     const data = await this.gameProcessService.pause(id);
 
-    return { event: 'paused', data };
+    return { event: 'data', data };
   }
 
   @SubscribeMessage('unpause')
   public async unpause(@MessageBody('id') id: string): Promise<WsResponse> {
     const data = await this.gameProcessService.unpause(id);
 
-    return { event: 'paused', data };
+    return { event: 'data', data };
   }
 
   @SubscribeMessage('swap')
   public swap(@MessageBody() { id, playerId }: GameEventDto): WsResponse {
     const data = this.gameProcessService.swap(id, playerId);
 
-    return { event: 'swapped', data };
+    return { event: 'data', data };
+  }
+
+  @SubscribeMessage('data')
+  public data(@MessageBody('id') id: string): WsResponse {
+    const data = this.gameProcessService.info(id);
+
+    return { event: 'data', data };
   }
 }

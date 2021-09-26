@@ -21,7 +21,7 @@ export class UsersController {
     required: false
   })
   @Get('/')
-  public getAll(
+  public async getAll(
     @Query('limit', ParseNumberPipe) limit: number,
     @Query('skip', ParseNumberPipe) skip: number,
   ) {

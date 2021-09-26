@@ -1,21 +1,18 @@
-import { ActionService } from "@components/action/action.service";
-import { StatisticsService } from "@components/statistics/statistics.service";
 import { Injectable } from "@nestjs/common";
 import { EventEmitter } from "stream";
 import { Game } from "./core/game.class";
 import { Teams } from "./enum/teams.enum";
 import GamesRepository from "./games.repository";
 import { gameEvent } from "./utils/event.util";
-import { ObjectId } from 'mongodb';
 import { GameInfo } from "./core/interfaces/game-info.interface";
+import { EventEmitter2 } from "eventemitter2";
+import { GameStatus } from "./enum/game-status.enum";
 
 @Injectable()
 export class GameProcessService {
   constructor(
     private readonly gameRepository: GamesRepository,
-
-    private readonly statisticService: StatisticsService,
-    private readonly actionService: ActionService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   private games: {[key: string]: Game} = {};
@@ -47,13 +44,15 @@ export class GameProcessService {
   } 
 
   public async start(id: String) {
-    const { players, title } = await this.gameRepository.getGameInfo(id);
+    const { players, title, status } = await this.gameRepository.getGameInfo(id);
+
+    if (status !== GameStatus.DRAFT) throw new Error('Game is already finished or started!');
 
     const game: Game = Game.create({ 
       id, 
       teams: players,
       title,
-      emiter: this.emiter,
+      emitter: this.emiter,
     });
 
     this.appendGame(game);
@@ -61,9 +60,9 @@ export class GameProcessService {
     await this.saveGame(id, game.info());
   }
 
-  public goal(id: any, playerId: any) {
+  public goal(id: any, playerId: any, enemyId: any) {
     return this.getGame(id)
-      .goal(playerId)
+      .goal(playerId, enemyId)
       .info();
   }
 
@@ -96,34 +95,15 @@ export class GameProcessService {
   private async finish(game: Game) {
     const info = game.info();
 
-    const stats = info.players.map((player) => ({
-        user: player._id,
-        mGoals: player.mGoals,
-        rGoals: player.rGoals,
-        team: player.team,
-        won: player.team == info.winner,
-        game: info.id,
-      }));
-
-    const actions = info.actions ? info.actions.map((action) => ({
-        ...action,
-        game: new ObjectId(game.id),
-        player: action.player?._id,
-    })): [];  
-    
-    const actionsIds = (await this.actionService.create(actions)).map(e => e._id);
-    const statsIds = (await this.statisticService.saveStats(stats)).map(e => e._id);
-
-    await this.saveGame(game.id, info, statsIds, actionsIds);
+    await this.eventEmitter.emitAsync('games.finished', { game, info });
+    await this.saveGame(game.id, info);
 
     this.emiter.emit('finished', { id: info.id });
   }
 
-  private saveGame(id: any, info: GameInfo, stats: ObjectId[] = [], actions: ObjectId[] = []) {
+  private saveGame(id: any, info: GameInfo) {
     return this.gameRepository.updateById(id, {
       $set: {
-        stats,
-        actions,
         score: [info.score[Teams.red], info.score[Teams.blue]],
         status: info.status,
         winner: info.winner,

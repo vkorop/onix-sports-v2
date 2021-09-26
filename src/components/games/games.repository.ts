@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, UpdateQuery, UpdateWithAggregationPipeline } from 'mongoose';
+import { FilterQuery, Model, UpdateQuery, UpdateWithAggregationPipeline } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { Injectable } from '@nestjs/common';
 import statisticsConstants from './games-constants';
@@ -14,11 +14,13 @@ export default class GamesRepository {
     private readonly gameModel: Model<GameEntity>
   ) {}
 
-  create(games: CreateGameDto[]) {
-    return this.gameModel.create(games);
+  async create(_games: CreateGameDto[], select?: any) {
+    const games = await this.gameModel.create(_games);
+
+    return this.gameModel.populate(games, { path: 'players', select });
   }
 
-  updateById(_id: Number, update?: UpdateWithAggregationPipeline | UpdateQuery<GameEntity> | undefined,) {
+  updateById(_id: any, update?: UpdateWithAggregationPipeline | UpdateQuery<GameEntity> | undefined,) {
     return this.gameModel.findByIdAndUpdate(_id, update);
   }
 
@@ -35,7 +37,7 @@ export default class GamesRepository {
     return game;
   }
 
-  getGames(limit: number, skip: number) {
-    return this.gameModel.find().skip(skip).limit(limit);
+  async getGames(query: FilterQuery<GameEntity>,limit: number, skip: number) {
+    return this.gameModel.find(query).skip(skip).limit(limit).populate('players', { name: 1, _id: 1 });
   }
 }

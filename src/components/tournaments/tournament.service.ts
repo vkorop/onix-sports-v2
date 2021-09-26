@@ -1,7 +1,7 @@
 import { StringObjectId } from "@components/common/types/string-objectid.type";
 import { GameEntity } from "@components/games/schemas/game.schema";
 import { Injectable } from "@nestjs/common";
-import { ObjectId } from "mongodb";
+import { OnEvent } from "@nestjs/event-emitter";
 import { CreateTournamentDto } from "./dto/create-tournament.dto";
 import { TournamentStatus } from "./enum/tour-status.enum";
 import { TournamentRepository } from "./tournament.repository";
@@ -24,12 +24,18 @@ export class TournamentService {
     return this.tournamentRepository.getById(id);
   }
 
-  async pushGame(id: StringObjectId, game: GameEntity) {
-    const tournament = await this.tournamentRepository.getById(id);
-
-    if (tournament?.status !== TournamentStatus.OPENED) throw new Error(`Tournament ${tournament?.title} is closed!`);
-
-    return tournament?.update({ $push: { games: game._id }, $addToSet: { players: game.players } });
+  @OnEvent('games.created', { async: true })
+  async pushGames({ games }: { games: GameEntity[] }) {
+    const promises = games.map(({ tournament, _id, players }) => 
+      this.tournamentRepository.update({ 
+        _id: tournament,
+        status: TournamentStatus.OPENED 
+      }, { 
+        $push: { games: _id },
+        $addToSet: { players: players.map(({_id}: any) => _id) } 
+      }));
+    
+    await Promise.all(promises);
   }
 
   closeTournament(id: StringObjectId) {

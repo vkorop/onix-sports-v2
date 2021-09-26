@@ -42,6 +42,12 @@ export default class StatisticsRepository {
           rGoals: {
             $sum: "$rGoals",
           },
+          amGoals: {
+            $sum: "$amGoals",
+          },
+          arGoals: {
+            $sum: "$arGoals",
+          },
           won: {
             $sum: {
               $cond: ["$won", 1, 0],

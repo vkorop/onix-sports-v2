@@ -1,5 +1,4 @@
-import { TournamentService } from '@components/tournaments/tournament.service';
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiBody, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ParseNumberPipe } from '@pipes/number.pipe';
 import { ParseObjectIdPipe } from '@pipes/objectId.pipe';
@@ -12,7 +11,6 @@ import { GamesService } from './games.service';
 export class GamesController {
   constructor(
     private readonly gameService: GamesService,
-    private readonly tournamentService: TournamentService,
   ) {}
 
   @Get('/:id')
@@ -28,15 +26,6 @@ export class GamesController {
   public async createGames(@Body() gamesDto: CreateGamesDto[]) {
     const games = await this.gameService.createGames(gamesDto);
 
-    const promises = games.map((game) => {
-      if (game.tournament) {
-        return this.tournamentService.pushGame(game.tournament, game);
-      }
-      return new Promise((resolve) => resolve({}));
-    }) 
-
-    await Promise.all(promises);
-
     return games;
   }
 
@@ -48,11 +37,17 @@ export class GamesController {
     name: 'skip',
     required: false
   })
+  @ApiQuery({
+    name: 'tournament',
+    required: false,
+    type: String,
+  })
   @Get('/')
   public async getGames(
-    @Query('limit', ParseNumberPipe) limit: number,
-    @Query('skip', ParseNumberPipe) skip: number,
+    @Query('limit', ParseNumberPipe) limit?: number,
+    @Query('skip', ParseNumberPipe) skip?: number,
+    @Query('tournament', ParseObjectIdPipe) tournament?: ObjectId,
   ) {
-    return this.gameService.getGames(limit, skip);
+    return this.gameService.getGames({ tournament }, limit, skip);
   }
 }

@@ -1,7 +1,8 @@
-import { Controller, Post } from "@nestjs/common";
-import { ApiBody, ApiTags } from "@nestjs/swagger";
+import { Controller, Get, Post } from "@nestjs/common";
+import { ApiBody, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { GameEventDto } from "./dto/game-event.dto";
 import { GameIdDto } from "./dto/start-game.dto";
+import { GameInfoDto } from "./dto/game-info.dto";
 
 @ApiTags('Games Sockets events')
 @Controller('sockets')
@@ -25,4 +26,12 @@ export class GamesGatewayDoc {
   @ApiBody({ type: GameEventDto })
   @Post('swap')
   swap() {}
+
+  @ApiBody({ type: GameIdDto })
+  @Post('data')
+  data() {}
+
+  @ApiResponse({ type: GameInfoDto, status: 200 })
+  @Get('data')
+  getData() {}
 }

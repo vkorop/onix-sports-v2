@@ -4,4 +4,7 @@ import { GameIdDto } from "./start-game.dto";
 export class GameEventDto extends GameIdDto {
   @ApiProperty({ type: String })
   readonly playerId: string = '';
+
+  @ApiProperty({ type: String })
+  readonly enemyId: string = '';
 }
