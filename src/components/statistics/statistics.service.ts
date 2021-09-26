@@ -23,7 +23,7 @@ export class StatisticsService {
       arGoals: player.arGoals,
       team: player.team,
       won: player.team == info.winner,
-      game: info.id,
+      game: new ObjectId(info.id),
     }));
 
     const _stats = await this.statisticRepository.create(stats);
