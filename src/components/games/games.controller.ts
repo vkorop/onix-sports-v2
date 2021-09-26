@@ -37,11 +37,16 @@ export class GamesController {
     name: 'skip',
     required: false
   })
+  @ApiQuery({
+    name: 'tournament',
+    required: false
+  })
   @Get('/')
   public async getGames(
-    @Query('limit', ParseNumberPipe) limit: number,
-    @Query('skip', ParseNumberPipe) skip: number,
+    @Query('limit', ParseNumberPipe) limit?: number,
+    @Query('skip', ParseNumberPipe) skip?: number,
+    @Query('tournament', ParseObjectIdPipe) tournament?: ObjectId,
   ) {
-    return this.gameService.getGames(limit, skip);
+    return this.gameService.getGames({ tournament }, limit, skip);
   }
 }

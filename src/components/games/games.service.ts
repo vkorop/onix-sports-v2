@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from 'eventemitter2';
 import { ObjectId } from 'mongodb';
+import { FilterQuery } from 'mongoose';
 import CreateGamesDto from './dto/create-game.dto';
 import GamesRepository from './games.repository';
+import { GameEntity } from './schemas/game.schema';
 
 @Injectable()
 export class GamesService {
@@ -24,8 +26,8 @@ export class GamesService {
     return this.gamesRepository.getGameInfo(id);
   }
 
-  public getGames(limit: number = 0, skip: number = 0) {
-    return this.gamesRepository.getGames(limit, skip);
+  public getGames(query: FilterQuery<GameEntity>, limit: number = 0, skip: number = 0) {
+    return this.gamesRepository.getGames(query, limit, skip);
   }
 
   public pushStats(id: ObjectId, stats: ObjectId[]) {

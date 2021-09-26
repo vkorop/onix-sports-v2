@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, UpdateQuery, UpdateWithAggregationPipeline } from 'mongoose';
+import { FilterQuery, Model, UpdateQuery, UpdateWithAggregationPipeline } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { Injectable } from '@nestjs/common';
 import statisticsConstants from './games-constants';
@@ -37,7 +37,7 @@ export default class GamesRepository {
     return game;
   }
 
-  getGames(limit: number, skip: number) {
-    return this.gameModel.find().skip(skip).limit(limit);
+  getGames(query: FilterQuery<GameEntity>,limit: number, skip: number) {
+    return this.gameModel.find(query).skip(skip).limit(limit);
   }
 }
