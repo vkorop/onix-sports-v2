@@ -39,7 +39,8 @@ export class GamesController {
   })
   @ApiQuery({
     name: 'tournament',
-    required: false
+    required: false,
+    type: String,
   })
   @Get('/')
   public async getGames(
