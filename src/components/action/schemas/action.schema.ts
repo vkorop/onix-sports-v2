@@ -18,6 +18,9 @@ export class Action {
   @Prop()
   time: Date = new Date();
 
+  @Prop()
+  timeFromStart: Number;
+
   @Prop({ type: Object })
   info: any;
 
