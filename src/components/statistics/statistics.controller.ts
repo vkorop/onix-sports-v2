@@ -13,7 +13,7 @@ export class StatisticsController {
     private readonly statisticService: StatisticsService,
   ) {}
 
-  @ApiQuery({ name: 'ids', type: [String] })
+  @ApiQuery({ name: 'ids', type: [String], required: false })
   @ApiQuery({ name: 'dateFrom', type: Number, required: false })
   @ApiQuery({ name: 'dateTo', type: Number, required: false })
   @Get('/')
