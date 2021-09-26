@@ -1,9 +1,10 @@
 import { ActionModule } from '@components/action/action.module';
 import { GamesModule } from '@components/games/games.module';
+import { NotificationModule } from '@components/notification/notification.module';
 import { StatisticsModule } from '@components/statistics/statistics.module';
 import { TournamentModule } from '@components/tournaments/tournament.module';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from '../auth/auth.module';
@@ -28,6 +29,7 @@ import { AppService } from './app.service';
     GamesModule,
     TournamentModule,
     ActionModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
