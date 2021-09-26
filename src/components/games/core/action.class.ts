@@ -13,15 +13,19 @@ export class Action {
   time: any;
 
   @ApiProperty({ type: String })
+  timeFromStart: number;
+
+  @ApiProperty({ type: String })
   info: any;
 
   @ApiProperty({ type: String })
   game: ObjectId;
 
-  constructor({ type, player, info, game }: { type: ActionType, player?: any, info: any, game: ObjectId }) {
+  constructor({ type, player, info, game, startedAt }: { type: ActionType, player?: any, info: any, game: ObjectId, startedAt: Date }) {
     this.type = type;
     this.player = player;
     this.time = new Date();
+    this.timeFromStart = new Date().valueOf() - startedAt.valueOf();
     this.info = info;
     this.game = game;
   }

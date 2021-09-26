@@ -122,7 +122,7 @@ export class Game {
     const info = this.info();
     delete info.actions;
     
-    const action = new Action({ type, player, info, game: new ObjectId(this.id) });
+    const action = new Action({ type, player, info, game: new ObjectId(this.id), startedAt: this.startedAt });
 
     this.actions.push(action);
   }
