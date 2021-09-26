@@ -5,9 +5,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import statisticsConstants from './statistics-constants';
 import { StatisticSchema } from './schemas/statistic.schema';
 import StatisticsRepository from './statistics.repository';
+import { GamesModule } from '@components/games/games.module';
 
 @Module({
   imports: [
+    GamesModule,
     MongooseModule.forFeature([
       {
         name: statisticsConstants.models.statistics,

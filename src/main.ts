@@ -1,3 +1,4 @@
+import { AllExceptionsFilter } from '@filters/all-exception.filter';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './components/app/app.module';
@@ -7,6 +8,8 @@ const { PORT } = process.env;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   const config = new DocumentBuilder()
     .setTitle('Onix sports swagger')
@@ -19,6 +22,6 @@ async function bootstrap() {
 
   await app.listen(PORT as string);
 
-  console.log('Server is listening on port:', PORT);
+  console.log(`http://localhost:${PORT}/`);
 }
 bootstrap();

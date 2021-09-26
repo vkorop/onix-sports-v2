@@ -19,19 +19,20 @@ export default class StatisticsRepository {
   }
 
   async getStats(ids: ObjectId[], dateFrom: Date, dateTo: Date) {
-    console.log(ids, dateFrom, dateTo)
+    const $match: any = {
+      createdAt: { 
+        $gte: dateFrom,
+        $lte: dateTo,
+      },
+    };
 
+    if (ids) {
+      $match.user = { $in: ids } ;
+    }
+    
     return this.statisticModel.aggregate([
       {
-        $match: {
-          user: {
-            $in: ids 
-          },
-          createdAt: { 
-            $gte: dateFrom,
-            $lte: dateTo,
-          },
-        },
+        $match,
       },
       {
         $group: {
@@ -41,6 +42,12 @@ export default class StatisticsRepository {
           },
           rGoals: {
             $sum: "$rGoals",
+          },
+          amGoals: {
+            $sum: "$amGoals",
+          },
+          arGoals: {
+            $sum: "$arGoals",
           },
           won: {
             $sum: {

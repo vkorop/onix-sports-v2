@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
-import { ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { ApiBody, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ParseNumberPipe } from '@pipes/number.pipe';
 import { ParseObjectIdPipe } from '@pipes/objectId.pipe';
 import { ObjectId } from 'mongodb';
 import CreateGamesDto from './dto/create-game.dto';
-import FinishGameDto from './dto/finish-game.dto';
 import { GamesService } from './games.service';
 
 @ApiTags('Games')
@@ -13,17 +13,41 @@ export class GamesController {
     private readonly gameService: GamesService,
   ) {}
 
-  @Get('/:gameId')
-  @ApiParam({ name: 'gameId', type: String })
+  @Get('/:id')
+  @ApiParam({ name: 'id', type: String })
   public async getGameInfo(
-    @Param('gameId', ParseObjectIdPipe) gameId: ObjectId,
+    @Param('id', ParseObjectIdPipe) id: ObjectId,
   ) {
-    return this.gameService.getGameInfo(gameId);
+    return this.gameService.getGameInfo(id);
   }
 
   @Post('/')
   @ApiBody({ type: [CreateGamesDto] })
-  public async createGames(@Body() games: CreateGamesDto[]) {
-    return this.gameService.createGames(games);
+  public async createGames(@Body() gamesDto: CreateGamesDto[]) {
+    const games = await this.gameService.createGames(gamesDto);
+
+    return games;
+  }
+
+  @ApiQuery({
+    name: 'limit',
+    required: false
+  })
+  @ApiQuery({
+    name: 'skip',
+    required: false
+  })
+  @ApiQuery({
+    name: 'tournament',
+    required: false,
+    type: String,
+  })
+  @Get('/')
+  public async getGames(
+    @Query('limit', ParseNumberPipe) limit?: number,
+    @Query('skip', ParseNumberPipe) skip?: number,
+    @Query('tournament', ParseObjectIdPipe) tournament?: ObjectId,
+  ) {
+    return this.gameService.getGames({ tournament }, limit, skip);
   }
 }

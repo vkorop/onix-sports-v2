@@ -1,84 +1,58 @@
-import { Document, Schema, Types } from 'mongoose';
-import { ApiProperty } from '@nestjs/swagger';
+import { Document, Mixed } from 'mongoose';
 import { ObjectId } from 'mongodb';
 
 import gameConstants from '../games-constants';
-import { Winner } from '../enum/winner.enum';
 import statisticsConstants from '@components/statistics/statistics-constants';
 import userConstants from '@components/users/user-constants';
 import { GameStatus } from '../enum/game-status.enum';
+import { Teams } from '../enum/teams.enum';
+import { TournamentConstants } from '@components/tournaments/tournament.constants';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { StringObjectId } from '@components/common/types/string-objectid.type';
 
-export class GameEntity extends Document {
-  @ApiProperty({ type: String })
-  readonly _id: Types.ObjectId = new ObjectId();
-}
+@Schema({
+  versionKey: false,
+  timestamps: true,
+  collection: gameConstants.models.games,
+})
+export class Game {
+  @Prop({ type: String, default: '' })
+  title: String; 
 
-export class ActionEntity {
-  constructor({ type, playerId }: any) {
-    this.type = type;
-    this.playerId = playerId;
-    this.date = new Date();
-  }
+  @Prop({ type: [ObjectId], required: true, ref: userConstants.models.users })
+  players: ObjectId[];
 
-  readonly type: string = '';
-  readonly playerId: ObjectId = new ObjectId();
-  readonly date: Date = new Date();
-}
+  @Prop({ type: [ObjectId], ref: statisticsConstants.models.statistics })
+  stats: ObjectId[];
 
-export const TeamSchema = new Schema({
-  players: {
-    type: [ObjectId],
-    ref: userConstants.models.users,
-    required: true
-  },
-});
+  @Prop({ type: Teams })
+  winner: Teams;
 
-export const GameSchema = new Schema(
-  {
-    title: {
-      type: String,
-      default: '',
-      required: true,
-    },
-    teams: {
-      type: [TeamSchema],
-      ref: userConstants.models.users,
-      required: true,
-    },
-    stats: {
-      type: [ObjectId],
-      ref: statisticsConstants.models.statistics
-    },
-    winner: {
-      type: Winner,
-    },
-    status: {
-      type: GameStatus,
-      default: GameStatus.DRAFT,
-    },
-    roomId: {
-      type: Number,
-      default: Date.now()
-    },
-    watchers: {
-      type: [ObjectId],
-      default: [],
-    },
-    actions: {
-      type: [Schema.Types.Mixed],
-      default: [],
-    },
-    startedAt: {
-      type: Date,
-    },
-    // tournament: {
-    //   type: ObjectId,
-    //   ref: ,
-    // },
-  },
-  {
-    versionKey: false,
-    timestamps: true,
-    collection: gameConstants.models.games,
-  },
-);
+  @Prop({ type: GameStatus, default: GameStatus.DRAFT })
+  status: GameStatus;
+
+  @Prop({ type: [ObjectId], default: [] })
+  watchers: ObjectId[];
+
+  @Prop({ type: [ObjectId], default: [] })
+  actions: ObjectId[];
+
+  @Prop({ type: Date })
+  startedAt: Date;
+
+  @Prop({ type: Date })
+  finishedAt: Date;
+
+  @Prop({ type: [Number] })
+  score: Number[];
+
+  @Prop({ type: Number, default: 0 })
+  duration: Number;
+
+  @Prop({ type: ObjectId, ref: TournamentConstants.models.tournaments })
+  tournament: any;
+};
+
+export type GameEntity = Game & Document;
+
+export const GameSchema = SchemaFactory.createForClass(Game);

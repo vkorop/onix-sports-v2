@@ -1,62 +1,75 @@
-import { Logger, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WsResponse } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
-import { ActionType } from './enum/action-type.enum';
-import { GamesService } from './games.service';
-import { ActionEntity } from './schemas/game.schema';
+import { WsExceptionFilter } from '@filters/ws-exception.filter';
+import { Logger, UseFilters } from '@nestjs/common';
+import { MessageBody, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
+import { Server } from 'socket.io';
+import { EventEmitter } from 'stream';
+import { GameEventDto } from './dto/game-event.dto';
+import { GameProcessService } from './game-process.service';
 
-@WebSocketGateway(80, { transports: ['websocket'] })
-export class GamesGateway {
+@UseFilters(new WsExceptionFilter())
+@WebSocketGateway({ transports: ['websocket'] })
+export class GamesGateway implements OnGatewayInit {
   constructor(
-    private readonly gameService: GamesService,
+    private readonly gameProcessService: GameProcessService,
   ) {}
 
+  @WebSocketServer()
+  server: Server = new Server();
+
   private logger: Logger = new Logger(GamesGateway.name);
+  private emiter: EventEmitter = new EventEmitter();
 
-  @SubscribeMessage('joinRoom')
-  handleMessage(@ConnectedSocket() client: Socket, @MessageBody() { roomId }: any): WsResponse<unknown> {
-    this.logger.log(`Client ${client.id} connected to room ${roomId}`);
+  afterInit() {
+    this.emiter = this.gameProcessService.Emiter;
 
-    client.join(roomId);
-    client.broadcast.to(roomId);
-
-    return { event: 'joinedRoom', data: {} };
+    this.emiter.on('finish', this.finish);
   }
 
-  @SubscribeMessage('startGame')
-  async handleStart(@ConnectedSocket() client: Socket, @MessageBody() { roomId }: any): Promise<WsResponse<unknown>> {
-    this.logger.log(`Client ${client.id} started game ${roomId}`);
+  public finish({ id }: any) {
+    this.server.emit('finish', { id });
+  }
 
-    await this.gameService.startGame(roomId);
+  @SubscribeMessage('start')
+  public async start(@MessageBody('id') id: string): Promise<WsResponse> {
+    await this.gameProcessService.start(id);
 
-    client.to(roomId);
+    const data = this.gameProcessService.info(id);
 
-    return { event: 'startedGame', data: {} };
+    return { event: 'data', data };
   }
 
   @SubscribeMessage('goal')
-  async handleGoal(
-    @ConnectedSocket() client: Socket, 
-    @MessageBody() { roomId, playerId }: any): Promise<WsResponse<unknown>> {
-    this.logger.log(`Client ${client.id} saved action ${ActionType.GOAL}`);
+  public goal(@MessageBody() { id, playerId, enemyId }: GameEventDto): WsResponse {
+    const data = this.gameProcessService.goal(id, playerId, enemyId);
 
-    await this.gameService.saveAction(roomId, { actionType: ActionType.GOAL, playerId });
-
-    client.to(roomId);
-
-    return { event: 'actionSaved', data: {} };
+    return { event: 'data', data };
   }
 
-  @SubscribeMessage('finishGame')
-  async handleFinish(
-    @ConnectedSocket() client: Socket, 
-    @MessageBody() { roomId, winner }: any): Promise<WsResponse<unknown>> {
-    this.logger.log(`Client ${client.id} finished game ${roomId}`);
+  @SubscribeMessage('pause')
+  public async pause(@MessageBody('id') id: string): Promise<WsResponse> {
+    const data = await this.gameProcessService.pause(id);
 
-    await this.gameService.finishGame(roomId, { winner });
+    return { event: 'data', data };
+  }
 
-    client.to(roomId);
+  @SubscribeMessage('unpause')
+  public async unpause(@MessageBody('id') id: string): Promise<WsResponse> {
+    const data = await this.gameProcessService.unpause(id);
 
-    return { event: 'finishedGame', data: {} };
+    return { event: 'data', data };
+  }
+
+  @SubscribeMessage('swap')
+  public swap(@MessageBody() { id, playerId }: GameEventDto): WsResponse {
+    const data = this.gameProcessService.swap(id, playerId);
+
+    return { event: 'data', data };
+  }
+
+  @SubscribeMessage('data')
+  public data(@MessageBody('id') id: string): WsResponse {
+    const data = this.gameProcessService.info(id);
+
+    return { event: 'data', data };
   }
 }

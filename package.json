@@ -1,6 +1,6 @@
 {
   "name": "onix-sports-v2",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "author": "vkorop",
   "private": true,
@@ -24,6 +24,7 @@
     "@nestjs/common": "^7.5.1",
     "@nestjs/config": "^0.6.3",
     "@nestjs/core": "^7.5.1",
+    "@nestjs/event-emitter": "^1.0.0",
     "@nestjs/mongoose": "^7.2.4",
     "@nestjs/platform-express": "^7.5.1",
     "@nestjs/platform-socket.io": "^8.0.6",

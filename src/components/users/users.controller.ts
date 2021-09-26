@@ -1,5 +1,6 @@
 import { Controller, Get, HttpStatus, Param, Query, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ParseNumberPipe } from '@pipes/number.pipe';
 import { ParseObjectIdPipe } from '@pipes/objectId.pipe';
 import { ObjectId } from 'mongodb';
 import { UsersService } from './users.service';
@@ -11,9 +12,20 @@ export class UsersController {
     private readonly usersService: UsersService,
   ) {}
 
+  @ApiQuery({
+    name: 'limit',
+    required: false
+  })
+  @ApiQuery({
+    name: 'skip',
+    required: false
+  })
   @Get('/')
-  public getAll() {
-    return this.usersService.getAll();
+  public async getAll(
+    @Query('limit', ParseNumberPipe) limit: number,
+    @Query('skip', ParseNumberPipe) skip: number,
+  ) {
+    return this.usersService.getAll(limit, skip);
   }
 
   @ApiParam({ name: 'id', type: String })

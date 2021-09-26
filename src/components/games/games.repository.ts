@@ -1,11 +1,10 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, UpdateQuery, UpdateWithAggregationPipeline } from 'mongoose';
+import { FilterQuery, Model, UpdateQuery, UpdateWithAggregationPipeline } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { Injectable } from '@nestjs/common';
 import statisticsConstants from './games-constants';
 import { GameEntity } from './schemas/game.schema';
 import CreateGameDto from './dto/create-game.dto';
-import { Winner } from './enum/winner.enum';
 
 
 @Injectable()
@@ -15,15 +14,30 @@ export default class GamesRepository {
     private readonly gameModel: Model<GameEntity>
   ) {}
 
-  create(games: CreateGameDto[]) {
-    return this.gameModel.create(games);
+  async create(_games: CreateGameDto[], select?: any) {
+    const games = await this.gameModel.create(_games);
+
+    return this.gameModel.populate(games, { path: 'players', select });
   }
 
-  updateByRoom(roomId: Number, update?: UpdateWithAggregationPipeline | UpdateQuery<GameEntity> | undefined,) {
-    return this.gameModel.updateOne({ roomId }, update);
+  updateById(_id: any, update?: UpdateWithAggregationPipeline | UpdateQuery<GameEntity> | undefined,) {
+    return this.gameModel.findByIdAndUpdate(_id, update);
   }
 
-  getGameInfo(id: ObjectId) {
-    return this.gameModel.findById(id).populate('teams.players stats');
+  getActions(roomId: Number) {
+    return this.gameModel.findOne({ roomId }).select('actions');
+  }
+
+  async getGameInfo(id: ObjectId | String) {
+    const game = await this.gameModel.findById(id)
+      .populate('players stats');
+
+    if (!game) throw new Error('Game was not found');
+
+    return game;
+  }
+
+  async getGames(query: FilterQuery<GameEntity>,limit: number, skip: number) {
+    return this.gameModel.find(query).skip(skip).limit(limit).populate('players', { name: 1, _id: 1 });
   }
 }
