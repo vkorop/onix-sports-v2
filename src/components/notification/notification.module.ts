@@ -1,10 +1,19 @@
-import { DynamicModule, Module, Provider } from "@nestjs/common";
-import { NotificationModuleAsyncConfig } from "./interfaces/notification-module-config.interface";
-import { forRootAsyncProviders } from "./notification.providers";
+import { Module } from "@nestjs/common";
+import { MongooseModule } from "@nestjs/mongoose";
+import { ChatRepository } from "./chat.repository";
+import { notificationConstants } from "./notification.constants";
 import { NotificationService } from "./notification.service";
-import { getModuleOptionsToken } from "./notification.utils";
+import { ChatSchema } from "./schemas/chat.schema";
 
 @Module({
-  providers: [NotificationService]
+  imports: [
+    MongooseModule.forFeature([{
+      name: notificationConstants.models.chats,
+      collection: notificationConstants.models.chats,
+      schema: ChatSchema,
+    }])
+  ],
+  providers: [NotificationService, ChatRepository],
+  exports: [NotificationService],
 })
 export class NotificationModule {}

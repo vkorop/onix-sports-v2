@@ -22,7 +22,7 @@ export class TournamentController {
 
   @ApiBody({ type: CloseTournamentDto })
   @Patch('/close')
-  public closeTournament(@Body('id') id: StringObjectId) {
+  public closeTournament(@Body('id') id: String) {
     return this.tournamentService.closeTournament(id);
   }
 
@@ -55,7 +55,7 @@ export class TournamentController {
     type: String, 
   })
   @Get('/:id')
-  public getTournament(@Param('id') id: StringObjectId) {
+  public getTournament(@Param('id') id: String) {
     return this.tournamentService.getOne(id);
   }
 }

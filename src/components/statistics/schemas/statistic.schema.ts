@@ -6,6 +6,7 @@ import userConstants from '@components/users/user-constants';
 import gamesConstants from '@components/games/games-constants';
 import { Teams } from '@components/games/enum/teams.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { TournamentConstants } from '@components/tournaments/tournament.constants';
 
 @Schema({
   versionKey: false,
@@ -31,6 +32,9 @@ export class Statistic {
 
   @Prop({ type: ObjectId, ref: gamesConstants.models.games })
   game: ObjectId;
+
+  @Prop({ type: ObjectId, ref: TournamentConstants.models.tournaments })
+  tournament: ObjectId;
 
   @Prop({ type: ObjectId, required: true, ref: userConstants.models.users })
   user: ObjectId;

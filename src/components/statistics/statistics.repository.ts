@@ -84,4 +84,8 @@ export default class StatisticsRepository {
       },
     ]);
   }
+
+  public getTournament(tournament: ObjectId) {
+    return this.statisticModel.find({ tournament });
+  }
 }

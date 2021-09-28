@@ -1,7 +1,7 @@
 import { StringObjectId } from "@components/common/types/string-objectid.type";
 import { GameEntity } from "@components/games/schemas/game.schema";
 import { Injectable } from "@nestjs/common";
-import { OnEvent } from "@nestjs/event-emitter";
+import { OnEvent, EventEmitter2 } from "@nestjs/event-emitter";
 import { CreateTournamentDto } from "./dto/create-tournament.dto";
 import { TournamentStatus } from "./enum/tour-status.enum";
 import { TournamentRepository } from "./tournament.repository";
@@ -10,6 +10,7 @@ import { TournamentRepository } from "./tournament.repository";
 export class TournamentService {
   constructor(
     private readonly tournamentRepository: TournamentRepository,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   create(tournament: CreateTournamentDto) {
@@ -38,7 +39,11 @@ export class TournamentService {
     await Promise.all(promises);
   }
 
-  closeTournament(id: StringObjectId) {
-    return this.tournamentRepository.updateById(id, { $set: { status: TournamentStatus.CLOSED } });
+  async closeTournament(id: String) {
+    const res = await this.tournamentRepository.updateById(id, { $set: { status: TournamentStatus.CLOSED } });
+    
+    this.eventEmitter.emit('tournament.closed', { tournament: { id: res?._id } });
+
+    return res;
   }
 }
