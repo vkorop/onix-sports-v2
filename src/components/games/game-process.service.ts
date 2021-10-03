@@ -44,7 +44,7 @@ export class GameProcessService {
   } 
 
   public async start(id: String) {
-    const { players, title, status } = await this.gameRepository.getGameInfo(id);
+    const { players, title, status, tournament } = await this.gameRepository.getGameInfo(id);
 
     if (status !== GameStatus.DRAFT) throw new Error('Game is already finished or started!');
 
@@ -53,6 +53,7 @@ export class GameProcessService {
       teams: players,
       title,
       emitter: this.emiter,
+      tournament
     });
 
     this.appendGame(game);

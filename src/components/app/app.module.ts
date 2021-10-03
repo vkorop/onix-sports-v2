@@ -1,5 +1,7 @@
 import { ActionModule } from '@components/action/action.module';
 import { GamesModule } from '@components/games/games.module';
+import { ListenersModule } from '@components/notification-listeners/listeners.module';
+import { NotificationModule } from '@components/notification/notification.module';
 import { StatisticsModule } from '@components/statistics/statistics.module';
 import { TournamentModule } from '@components/tournaments/tournament.module';
 import { Module } from '@nestjs/common';
@@ -28,6 +30,8 @@ import { AppService } from './app.service';
     GamesModule,
     TournamentModule,
     ActionModule,
+    NotificationModule,
+    ListenersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
