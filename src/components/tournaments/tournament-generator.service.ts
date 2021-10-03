@@ -44,7 +44,7 @@ export class TournamentGenerator {
 
     tournament = await this.tournamentService.getOne(tournament._id);
     
-    await this.eventEmitter.emitAsync('tournament.generated', { games, tournament, teams });
+    await this.eventEmitter.emitAsync('tournament.generated', { games, tournament, teams, players: shuffled });
 
     return { games, tournament, teams };
   }
