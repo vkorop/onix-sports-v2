@@ -18,7 +18,7 @@ export default class StatisticsRepository {
     return this.statisticModel.create(stats);
   }
 
-  async getStats(ids: ObjectId[], dateFrom: Date, dateTo: Date) {
+  public async getStatsPeriod(ids: ObjectId[], dateFrom: Date = new Date(0), dateTo: Date = new Date(Date.now())) {
     const $match: any = {
       createdAt: { 
         $gte: dateFrom,
@@ -26,7 +26,17 @@ export default class StatisticsRepository {
       },
     };
 
-    if (ids) {
+    return this.aggregateStats(ids, $match);
+  }
+
+  public async getTournament(tournament: ObjectId) {
+    const $match: any = { tournament };
+
+    return this.aggregateStats([], $match);
+  }
+
+  private async aggregateStats(ids: ObjectId[], $match: any = {}) {
+    if (ids && ids.length) {
       $match.user = { $in: ids } ;
     }
     
@@ -37,11 +47,17 @@ export default class StatisticsRepository {
       {
         $group: {
           _id: "$user",
+          goals: {
+            $sum: { $add: ["$mGoals", "$rGoals"] },
+          },
           mGoals: {
             $sum: "$mGoals",
           },
           rGoals: {
             $sum: "$rGoals",
+          },
+          aGoals: {
+            $sum: { $add: ["$amGoals", "$arGoals"] },
           },
           amGoals: {
             $sum: "$amGoals",
@@ -83,9 +99,5 @@ export default class StatisticsRepository {
         $unset: "user",
       },
     ]);
-  }
-
-  public getTournament(tournament: ObjectId) {
-    return this.statisticModel.find({ tournament });
   }
 }

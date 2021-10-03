@@ -5,8 +5,6 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ObjectId } from 'mongodb';
 import StatisticsRepository from './statistics.repository';
-import { TournamentService } from '@components/tournaments/tournament.service';
-import { StringObjectId } from '@components/common/types/string-objectid.type';
 
 @Injectable()
 export class StatisticsService {
@@ -36,16 +34,15 @@ export class StatisticsService {
     return _stats;
   }
 
-  public getStats(ids: ObjectId[], dateFrom: Date = new Date(0), dateTo: Date = new Date(Date.now())) {
-    return this.statisticRepository.getStats(ids, dateFrom, dateTo);
+  public getStats(ids: ObjectId[], dateFrom?: Date, dateTo?: Date) {
+    return this.statisticRepository.getStatsPeriod(ids, dateFrom, dateTo);
   }
 
   public async getTournamentPerform(id: ObjectId) {
     const stats = await this.statisticRepository.getTournament(id);
 
-    const goals = [...stats].sort((a, b) => (+a.mGoals + +a.rGoals) - (+b.mGoals + +b.rGoals));
-
-    console.log(goals);
+    const goals = [...stats]
+      .sort((b, a) => (+a.goals / a.games) - (+b.goals / b.games) || (a.won / a.games) - (b.won / b.games));
 
     return {
       goals,

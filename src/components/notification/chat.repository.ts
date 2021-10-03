@@ -17,7 +17,7 @@ export class ChatRepository {
   }
 
   subscribe(chatId: Number) {
-    return this.chatModel.updateOne({ chatId }, { subscribed: true });
+    return this.chatModel.updateOne({ chatId }, { $set: { subscribed: true } });
   }
 
   unsubscribe(chatId: Number) {
@@ -26,5 +26,9 @@ export class ChatRepository {
 
   getAll() {
     return this.chatModel.find();
+  }
+
+  getSubscribers() {
+    return this.chatModel.find({ subscribed: true });
   }
 }

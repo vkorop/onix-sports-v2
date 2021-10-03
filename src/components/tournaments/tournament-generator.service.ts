@@ -42,9 +42,9 @@ export class TournamentGenerator {
 
     await tournament.update({ type });
 
-    await this.eventEmitter.emitAsync('tournament.generated', { games, tournament, teams });
-
     tournament = await this.tournamentService.getOne(tournament._id);
+    
+    await this.eventEmitter.emitAsync('tournament.generated', { games, tournament, teams });
 
     return { games, tournament, teams };
   }
