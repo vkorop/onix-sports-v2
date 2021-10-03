@@ -27,12 +27,13 @@ export class Game {
   private totalPauseDuration: number = 0;
   private lastPauseDate: number = 0;
   private duration: number = 0;
+  private tournament: ObjectId;
 
   emitter: EventEmitter = new EventEmitter();
 
   private eventEmitter: EventEmitter2;
 
-  constructor({ id, teams, title, emitter, eventEmitter }: any) {
+  constructor({ id, teams, title, emitter, eventEmitter, tournament }: any) {
     const _players = teams.map(({ _id, name }: any, i: number) => new Player({
       _id,
       name,
@@ -45,6 +46,7 @@ export class Game {
     this.players = new Players(_players);
     this.emitter = emitter;
     this.eventEmitter = eventEmitter;
+    this.tournament = tournament;
 
     this.pushAction({ type: ActionType.START });
   }
@@ -151,6 +153,7 @@ export class Game {
       startedAt: this.startedAt,
       finishedAt: this.finishedAt,
       duration: this.duration,
+      tournament: this.tournament,
     };
   }
 }

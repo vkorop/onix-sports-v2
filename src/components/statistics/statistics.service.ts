@@ -24,6 +24,7 @@ export class StatisticsService {
       team: player.team,
       won: player.team == info.winner,
       game: new ObjectId(info.id),
+      tournament: info.tournament,
     }));
 
     const _stats = await this.statisticRepository.create(stats);
@@ -33,7 +34,18 @@ export class StatisticsService {
     return _stats;
   }
 
-  public getStats(ids: ObjectId[], dateFrom: Date = new Date(0), dateTo: Date = new Date(Date.now())) {
-    return this.statisticRepository.getStats(ids, dateFrom, dateTo);
+  public getStats(ids: ObjectId[], dateFrom?: Date, dateTo?: Date) {
+    return this.statisticRepository.getStatsPeriod(ids, dateFrom, dateTo);
+  }
+
+  public async getTournamentPerform(id: ObjectId) {
+    const stats = await this.statisticRepository.getTournament(id);
+
+    const goals = [...stats]
+      .sort((b, a) => (+a.goals / a.games) - (+b.goals / b.games) || (a.won / a.games) - (b.won / b.games));
+
+    return {
+      goals,
+    };
   }
 }
