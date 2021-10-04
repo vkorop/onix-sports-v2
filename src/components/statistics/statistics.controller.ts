@@ -1,9 +1,9 @@
-import { Body, Controller, Get, ParseArrayPipe, Post, Query } from '@nestjs/common';
-import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ParseDatePipe } from '@pipes/date.pipe';
+import { ParseObjectIdPipe } from '@pipes/objectId.pipe';
 import { ObjectIdsPipe } from '@pipes/objectIds.pipe';
 import { ObjectId } from 'mongodb';
-import CreateStatsDto from './dto/create-stats.dto';
 import { StatisticsService } from './statistics.service';
 
 @ApiTags('Statistics')
@@ -23,5 +23,16 @@ export class StatisticsController {
     @Query('dateTo', ParseDatePipe) dateTo: Date,
   ) {
     return this.statisticService.getStats(ids, dateFrom, dateTo);
+  }
+
+  @ApiParam({
+    name: 'tournament',
+    type: String,
+  })
+  @Get('/:tournament')
+  public getTournamentStats(
+    @Param('tournament', ParseObjectIdPipe) id: ObjectId
+  ) {
+    return this.statisticService.getTournamentStats(id);
   }
 }

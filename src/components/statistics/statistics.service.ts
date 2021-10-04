@@ -38,6 +38,10 @@ export class StatisticsService {
     return this.statisticRepository.getStatsPeriod(ids, dateFrom, dateTo);
   }
 
+  public getTournamentStats(id: ObjectId) {
+    return this.statisticRepository.getTournament(id);
+  }
+
   public async getTournamentPerform(id: ObjectId) {
     const stats = await this.statisticRepository.getTournament(id);
 
