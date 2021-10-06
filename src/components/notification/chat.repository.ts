@@ -17,7 +17,7 @@ export class ChatRepository {
   }
 
   subscribe(chatId: Number) {
-    return this.chatModel.updateOne({ chatId }, { $set: { subscribed: true } });
+    return this.chatModel.updateOne({ chatId }, { subscribed: true });
   }
 
   unsubscribe(chatId: Number) {
