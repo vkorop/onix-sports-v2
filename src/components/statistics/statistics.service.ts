@@ -48,8 +48,11 @@ export class StatisticsService {
     const goals = [...stats]
       .sort((b, a) => (+a.goals / a.games) - (+b.goals / b.games) || (a.won / a.games) - (b.won / b.games));
 
+    const totalGoals = stats.reduce((acc, val) => acc + val.goals, 0);
+
     return {
       goals,
+      totalGoals
     };
   }
 }
