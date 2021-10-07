@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectPage } from "nest-puppeteer";
-import { Page } from "puppeteer";
+import { Page, Viewport } from "puppeteer";
 import { ScreenshotRepository } from "./screenshots.repository";
 
 @Injectable()
@@ -11,7 +11,9 @@ export class PuppeteerService {
     private readonly screenshotRepository: ScreenshotRepository,
   ) {}
 
-  public async screenshot(html: string) {
+  public async screenshot(html: string, viewport?: Viewport) {
+    await this.page.setViewport({ width: 600, height: 550 });
+    
     await this.page.setContent(html);
 
     const path = this.screenshotRepository.newPath(`new-${Date.now()}.png`);

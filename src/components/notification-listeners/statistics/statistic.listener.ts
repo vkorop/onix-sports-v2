@@ -22,11 +22,27 @@ export class StatisticListener extends NotificationListener {
 
   @OnEvent('tournament.closed')
   async handleCloseTournament({ tournament: { id } }: { tournament: { id: ObjectId } }) {
-    const { goals } = await this.statisticService.getTournamentPerform(id);
-    const html = tournamentPerformTemplate({ bestPerformer: goals[0] });
+    const { goals, totalGoals } = await this.statisticService.getTournamentPerform(id);
+    const html = tournamentPerformTemplate({ 
+      name: goals[0].name, 
+      gpgPercent: goals[0].goals / goals[0].games * 10,
+      gpg: goals[0].goals / goals[0].games,
+      totalGoals,
+      goals: goals[0].goals,
+      goalsPercent: goals[0].goals / totalGoals * 100
+    });
+
     const path = await this.puppeteerService.screenshot(html);
 
-    await this.notificationService.sendPhotoToAll({ source: path });
+    await this.notificationService.sendPhotoToAll({ source: path }, { caption: 
+    `
+Statistics 2.0 (demo)
+
+<a href="http://onix-sports.herokuapp.com/statistic/leaderboard">Leaderboard</a>
+
+GPG - ${goals[0].name}'s goals per game
+TOTAL - ${goals[0].name}'s goals / all players goals
+    `, parse_mode: 'HTML' });
 
     this.puppeteerService.removeScreenshots();
   }
