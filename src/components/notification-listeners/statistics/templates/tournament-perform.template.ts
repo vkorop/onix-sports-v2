@@ -1,13 +1,10 @@
-export const tournamentPerformTemplate = ({ goals }: any) => (
-`
-Statistic was updated.
-Click <a href="https://onix-sports.herokuapp.com/statistic/leaderboard">here</a> to check it out!
+import fs from 'fs';
+import Handlebars from 'handlebars';
 
-Best performer: <a href="https://onix-sports.herokuapp.com/statistic/leaderboard">${goals[0].name}</a>
-Total goals: ${goals[0].goals}
-Goals per game: ${(goals[0].goals / goals[0].games).toFixed(2)}
+export const tournamentPerformTemplate = (ctx: any) => {
+  const hbs = fs.readFileSync(`${process.cwd()}/src/components/notification-listeners/statistics/templates/tournament.hbs`, {
+    encoding: 'utf-8',
+  });
 
-#bestperformer
-#${goals[0].name}
-`
-)
+  return Handlebars.compile(hbs)(ctx);
+};
