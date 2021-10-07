@@ -26,7 +26,7 @@ export class StatisticListener extends NotificationListener {
     const html = tournamentPerformTemplate({ 
       name: goals[0].name, 
       gpgPercent: goals[0].goals / goals[0].games * 10,
-      gpg: goals[0].goals / goals[0].games,
+      gpg: (goals[0].goals / goals[0].games).toFixed(2),
       totalGoals,
       goals: goals[0].goals,
       goalsPercent: goals[0].goals / totalGoals * 100
