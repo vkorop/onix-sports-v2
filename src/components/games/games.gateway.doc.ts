@@ -19,10 +19,6 @@ export class GamesGatewayDoc {
   @Post('pause')
   pause() {}
 
-  @ApiBody({ type: GameIdDto })
-  @Post('unpause')
-  unpause() {}
-
   @ApiBody({ type: GameEventDto })
   @Post('swap')
   swap() {}

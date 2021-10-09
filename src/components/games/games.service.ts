@@ -27,6 +27,10 @@ export class GamesService {
   }
 
   public getGames(query: FilterQuery<GameEntity>, limit: number = 0, skip: number = 0) {
+    Object.keys(query).forEach((key) => {
+      if (query[key] == undefined) delete query[key];
+    });
+
     return this.gamesRepository.getGames(query, limit, skip);
   }
 
