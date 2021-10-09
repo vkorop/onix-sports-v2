@@ -52,13 +52,6 @@ export class GamesGateway implements OnGatewayInit {
     return { event: 'data', data };
   }
 
-  @SubscribeMessage('unpause')
-  public async unpause(@MessageBody('id') id: string): Promise<WsResponse> {
-    const data = await this.gameProcessService.unpause(id);
-
-    return { event: 'data', data };
-  }
-
   @SubscribeMessage('swap')
   public swap(@MessageBody() { id, playerId }: GameEventDto): WsResponse {
     const data = this.gameProcessService.swap(id, playerId);
