@@ -23,6 +23,9 @@ export class StatisticListener extends NotificationListener {
   @OnEvent('tournament.closed')
   async handleCloseTournament({ tournament: { id } }: { tournament: { id: ObjectId } }) {
     const { goals, totalGoals } = await this.statisticService.getTournamentPerform(id);
+
+    if (!goals.length) return; 
+
     const html = tournamentPerformTemplate({ 
       name: goals[0].name, 
       gpgPercent: goals[0].goals / goals[0].games * 10,
