@@ -42,6 +42,9 @@ Statistics 2.0 (demo)
 
 GPG - ${goals[0].name}'s goals per game
 TOTAL - ${goals[0].name}'s goals / all players goals
+
+#bestperformer
+#${goals[0].name}
     `, parse_mode: 'HTML' });
 
     this.puppeteerService.removeScreenshots();
