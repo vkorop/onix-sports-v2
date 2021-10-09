@@ -72,19 +72,17 @@ export class GameProcessService {
   }
 
   public async pause(id: any) {
-    const info = this.getGame(id).pause().info();
+    const game = this.getGame(id);
 
-    await this.saveGame(id, info);
+    if (game.info().status == GameStatus.PAUSED) {
+      game.unpause();
+    } else if (game.info().status != GameStatus.DRAFT) {
+      game.pause();
+    }
 
-    return info;
-  }
+    await this.saveGame(id, game.info());
 
-  public async unpause(id: any) {
-    const info = this.getGame(id).unpause().info();
-
-    await this.saveGame(id, info);
-
-    return info;
+    return game.info();
   }
 
   public swap(id: any, playerId: any) {
@@ -99,7 +97,7 @@ export class GameProcessService {
     await this.eventEmitter.emitAsync('games.finished', { game, info });
     await this.saveGame(game.id, info);
 
-    this.emiter.emit('finished', { id: info.id });
+    this.emiter.emit('finished', { id: info.id, info });
   }
 
   private saveGame(id: any, info: GameInfo) {

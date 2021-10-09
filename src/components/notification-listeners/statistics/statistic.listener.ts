@@ -23,6 +23,9 @@ export class StatisticListener extends NotificationListener {
   @OnEvent('tournament.closed')
   async handleCloseTournament({ tournament: { id } }: { tournament: { id: ObjectId } }) {
     const { goals, totalGoals } = await this.statisticService.getTournamentPerform(id);
+
+    if (!goals.length) return; 
+
     const html = tournamentPerformTemplate({ 
       name: goals[0].name, 
       gpgPercent: goals[0].goals / goals[0].games * 10,
@@ -42,6 +45,9 @@ Statistics 2.0 (demo)
 
 GPG - ${goals[0].name}'s goals per game
 TOTAL - ${goals[0].name}'s goals / all players goals
+
+#bestperformer
+#${goals[0].name}
     `, parse_mode: 'HTML' });
 
     this.puppeteerService.removeScreenshots();
