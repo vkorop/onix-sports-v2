@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common';
 import statisticsConstants from './statistics-constants';
 import { StatisticEntity } from './schemas/statistic.schema';
 import CreateStatsDto from './dto/create-stats.dto';
+import { Teams } from '@components/games/enum/teams.enum';
 
 
 @Injectable()
@@ -48,6 +49,26 @@ export default class StatisticsRepository {
           },
           arGoals: {
             $sum: "$arGoals",
+          },
+          blueWon: {
+            $sum: {
+              $cond: [{ $and: [{ $eq: ["$team", Teams.blue] }, "$won"]}, 1, 0],
+            },
+          },
+          redWon: {
+            $sum: {
+              $cond: [{ $and: [{ $eq: ["$team", Teams.red] }, "$won"]}, 1, 0],
+            },
+          },
+          blueGames: {
+            $sum: {
+              $cond: [{ $eq: ["$team", Teams.blue] }, 1, 0],
+            },
+          },
+          redGames: {
+            $sum: {
+              $cond: [{ $eq: ["$team", Teams.red] }, 1, 0],
+            },
           },
           won: {
             $sum: {
