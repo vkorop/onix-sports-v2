@@ -2,6 +2,7 @@ import { Player } from '../player.class';
 import { Action } from '../action.class';
 import { GameStatus } from '../../enum/game-status.enum';
 import { Teams } from '../../enum/teams.enum';
+import { ObjectId } from 'mongodb';
 
 export interface GameInfo {
   id: any;
@@ -14,4 +15,5 @@ export interface GameInfo {
   startedAt: Date,
   finishedAt: Date,
   duration: number,
+  tournament: ObjectId;
 }

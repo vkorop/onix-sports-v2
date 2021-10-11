@@ -17,6 +17,9 @@ export default class CreateStatsDto {
     
     @ApiProperty({ type: String })
     readonly game: ObjectId = new ObjectId();
+    
+    @ApiProperty({ type: String })
+    readonly tournament: ObjectId = new ObjectId();
 
     @ApiProperty({ type: Teams })
     readonly team: Teams = Teams.red;

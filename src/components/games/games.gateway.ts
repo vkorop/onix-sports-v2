@@ -1,6 +1,7 @@
 import { WsExceptionFilter } from '@filters/ws-exception.filter';
 import { Logger, UseFilters } from '@nestjs/common';
 import { MessageBody, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
+import { EventEmitter2 } from 'eventemitter2';
 import { Server } from 'socket.io';
 import { EventEmitter } from 'stream';
 import { GameEventDto } from './dto/game-event.dto';
@@ -11,6 +12,8 @@ import { GameProcessService } from './game-process.service';
 export class GamesGateway implements OnGatewayInit {
   constructor(
     private readonly gameProcessService: GameProcessService,
+
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   @WebSocketServer()
@@ -25,8 +28,8 @@ export class GamesGateway implements OnGatewayInit {
     this.emiter.on('finish', this.finish);
   }
 
-  public finish({ id }: any) {
-    this.server.emit('finish', { id });
+  public finish({ id, info }: any) {
+    this.server.emit('finish', { id, info });
   }
 
   @SubscribeMessage('start')
@@ -35,12 +38,17 @@ export class GamesGateway implements OnGatewayInit {
 
     const data = this.gameProcessService.info(id);
 
+    this.server.emit('data', data);
+    this.eventEmitter.emit('game.started', { id });
+
     return { event: 'data', data };
   }
 
   @SubscribeMessage('goal')
   public goal(@MessageBody() { id, playerId, enemyId }: GameEventDto): WsResponse {
     const data = this.gameProcessService.goal(id, playerId, enemyId);
+
+    this.server.emit('data', data);
 
     return { event: 'data', data };
   }
@@ -49,12 +57,7 @@ export class GamesGateway implements OnGatewayInit {
   public async pause(@MessageBody('id') id: string): Promise<WsResponse> {
     const data = await this.gameProcessService.pause(id);
 
-    return { event: 'data', data };
-  }
-
-  @SubscribeMessage('unpause')
-  public async unpause(@MessageBody('id') id: string): Promise<WsResponse> {
-    const data = await this.gameProcessService.unpause(id);
+    this.server.emit('data', data);
 
     return { event: 'data', data };
   }
@@ -62,6 +65,8 @@ export class GamesGateway implements OnGatewayInit {
   @SubscribeMessage('swap')
   public swap(@MessageBody() { id, playerId }: GameEventDto): WsResponse {
     const data = this.gameProcessService.swap(id, playerId);
+
+    this.server.emit('data', data);
 
     return { event: 'data', data };
   }

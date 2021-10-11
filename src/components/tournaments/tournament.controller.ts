@@ -1,10 +1,8 @@
-import { StringObjectId } from "@components/common/types/string-objectid.type";
 import { Body, Controller, Get, Param, Patch, Post, Query } from "@nestjs/common";
 import { ApiBody, ApiParam, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { ParseNumberPipe } from "@pipes/number.pipe";
 import { CloseTournamentDto } from "./dto/close-tournament.dto";
 import { CreateTournamentDto } from "./dto/create-tournament.dto";
-import { PushGamesDto } from "./dto/push-games.dto";
 import { TournamentService } from "./tournament.service";
 
 @ApiTags('Tournaments')
@@ -22,7 +20,7 @@ export class TournamentController {
 
   @ApiBody({ type: CloseTournamentDto })
   @Patch('/close')
-  public closeTournament(@Body('id') id: StringObjectId) {
+  public closeTournament(@Body('id') id: String) {
     return this.tournamentService.closeTournament(id);
   }
 
@@ -55,7 +53,7 @@ export class TournamentController {
     type: String, 
   })
   @Get('/:id')
-  public getTournament(@Param('id') id: StringObjectId) {
+  public getTournament(@Param('id') id: String) {
     return this.tournamentService.getOne(id);
   }
 }
