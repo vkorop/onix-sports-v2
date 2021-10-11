@@ -22,7 +22,7 @@ export const eightPlayersTournament = (players: UserEntity[], tournament: Object
     tournament,
   },
   {
-    players: [players[0], players[1], players[6], players[7]],
+    players: [players[6], players[7], players[0], players[1]],
     tournament,
   },
   {
