@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ObjectId } from 'mongodb';
 import StatisticsRepository from './statistics.repository';
+import _ from 'lodash';
 
 @Injectable()
 export class StatisticsService {
@@ -34,12 +35,16 @@ export class StatisticsService {
     return _stats;
   }
 
-  public getStats(ids: ObjectId[], dateFrom?: Date, dateTo?: Date) {
+  public getStatsPeriod(ids: ObjectId[], dateFrom?: Date, dateTo?: Date) {
     return this.statisticRepository.getStatsPeriod(ids, dateFrom, dateTo);
   }
 
   public getTournamentStats(id: ObjectId) {
     return this.statisticRepository.getTournament(id);
+  }
+
+  public getLastGames(ids: ObjectId[], count: Number) {
+    return this.statisticRepository.getLastGames(ids, count);
   }
 
   public async getTournamentPerform(id: ObjectId) {
@@ -54,5 +59,27 @@ export class StatisticsService {
       goals,
       totalGoals
     };
+  }
+
+  public async getTeamsWinChance(teams: any[][], gamesCount: Number) {
+    const stats = await this.statisticRepository.getLastGames(teams.flat().map(({_id}: any) => _id), gamesCount);
+
+    const winrates = teams.map(([p1, p2]: any[]) => {
+      const stat1 = _.find(stats, ({ _id }: any) => _id.equals(p1._id)) || { won: 1, games: 2 };
+      const stat2 = _.find(stats, ({ _id }: any) => _id.equals(p2._id)) || { won: 1, games: 2 };
+
+      const wr = (stat1.won / stat1.games + stat2.won / stat2.games) / 2;
+
+      return { player1: p1, player2: p2, winrate: wr };
+    });
+
+    const lowestWinrate = Math.min(...winrates.map(({ winrate }: any) => winrate));
+    const coefs = winrates.map(({ player1, player2, winrate }) => ({ player1, player2, coef: winrate / lowestWinrate }));
+    const sumOfCoefs = coefs.reduce((acc, val) => acc + val.coef, 0);
+    const amount = 100 / sumOfCoefs;
+
+    const chances = coefs.map(({ player1, player2, coef }) => ({ player1, player2, chance: coef * amount }));
+
+    return chances;
   }
 }

@@ -22,7 +22,7 @@ export class StatisticsController {
     @Query('dateFrom', ParseDatePipe) dateFrom: Date,
     @Query('dateTo', ParseDatePipe) dateTo: Date,
   ) {
-    return this.statisticService.getStats(ids, dateFrom, dateTo);
+    return this.statisticService.getStatsPeriod(ids, dateFrom, dateTo);
   }
 
   @ApiParam({
