@@ -5,7 +5,6 @@ import { Injectable } from "@nestjs/common";
 import { EventEmitter2 } from "eventemitter2";
 import { ObjectId } from "mongodb";
 import { Document } from "mongoose";
-import { TournamentType } from "./enum/tour-type.enum";
 import { fourPlayersTournament } from "./helpers/4-players.helper";
 import { fivePlayersTournament } from "./helpers/5-players.helper";
 import { sixPlayersTournament } from "./helpers/6-players.helper";
