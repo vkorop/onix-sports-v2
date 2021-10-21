@@ -82,4 +82,22 @@ export class StatisticsService {
 
     return chances;
   }
+
+  public async getLeaderboard() {
+    const stats = await this.statisticRepository.getStatsPeriod();
+
+    const users = stats.map(({ goals, games, won, _id, name }) => {
+      const gpg = goals / (games || 1);
+      const winrate = won / (games || 1) * 100;
+
+      return { gpg, winrate, games, _id, name };
+    });
+
+    return users
+      .sort((a, b) => b.winrate - a.winrate)
+      .map((user, index) => ({ ...user, wScore: users.length - index, }))
+      .sort((a, b) => b.gpg - a.gpg)
+      .map((user, index) => ({ ...user, gScore: users.length - index, score: user.wScore + users.length - index }))
+      .sort((a, b) => b.score - a.score || b.wScore - a.wScore || b.gScore - a.gScore);
+  }
 }

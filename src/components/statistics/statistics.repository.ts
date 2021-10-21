@@ -19,7 +19,7 @@ export default class StatisticsRepository {
     return this.statisticModel.create(stats);
   }
 
-  public async getStatsPeriod(ids: ObjectId[], dateFrom: Date = new Date(0), dateTo: Date = new Date(Date.now())) {
+  public async getStatsPeriod(ids: ObjectId[] = [], dateFrom: Date = new Date(0), dateTo: Date = new Date(Date.now())) {
     const pipe: any = [{
       $match: {
         createdAt: { 
