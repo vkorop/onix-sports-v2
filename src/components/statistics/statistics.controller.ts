@@ -25,13 +25,18 @@ export class StatisticsController {
     return this.statisticService.getStatsPeriod(ids, dateFrom, dateTo);
   }
 
+  @Get('/leaderboard')
+  public getLeaderboard() {
+    return this.statisticService.getLeaderboard();
+  }
+
   @ApiParam({
     name: 'tournament',
     type: String,
   })
   @Get('/:tournament')
   public getTournamentStats(
-    @Param('tournament', ParseObjectIdPipe) id: ObjectId
+    @Param('tournament', ParseObjectIdPipe) id: ObjectId,
   ) {
     return this.statisticService.getTournamentStats(id);
   }
