@@ -19,7 +19,9 @@ export const lastGamesAggregationPipe = (count: Number) => [
           'game': '$game', 
           'tournament': '$tournament', 
           'createdAt': '$createdAt', 
-          'updatedAt': '$updatedAt'
+          'updatedAt': '$updatedAt',
+          'enemy': '$enemy',
+          'teammate': '$teammate'
         }
       }
     }
@@ -49,7 +51,9 @@ export const lastGamesAggregationPipe = (count: Number) => [
       'game': '$items.game', 
       'tournament': '$items.tournament', 
       'createdAt': '$items.createdAt', 
-      'updatedAt': '$items.updatedAt'
+      'updatedAt': '$items.updatedAt',
+      'enemy': '$items.enemy',
+      'teammate': '$items.teammate'
     }
   }
 ];
