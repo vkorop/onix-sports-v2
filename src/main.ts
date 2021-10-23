@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './components/app/app.module';
 
-const { version } = require('../package.json');
+// const { version } = require('../package.json');
 const { PORT } = process.env;
 
 async function bootstrap() {
@@ -14,7 +14,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Onix sports swagger')
     .setDescription('Onix sports API')
-    .setVersion(version)
+    .setVersion('2')
     .addTag('Onix Sports')
     .build();
   const document = SwaggerModule.createDocument(app, config);
