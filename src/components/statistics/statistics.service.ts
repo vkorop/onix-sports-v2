@@ -100,4 +100,12 @@ export class StatisticsService {
       .map((user, index) => ({ ...user, gScore: users.length - index, score: user.wScore + users.length - index }))
       .sort((a, b) => b.score - a.score || b.wScore - a.wScore || b.gScore - a.gScore);
   }
+
+  public getEnemies(player: ObjectId, enemies: ObjectId[], games: Number = 20) {
+    return this.statisticRepository.getEnemies(player, enemies, games);
+  }
+
+  public getTeammates(player: ObjectId, teammates: ObjectId[], games: Number = 20) {
+    return this.statisticRepository.getTeammates(player, teammates, games);
+  }
 }
