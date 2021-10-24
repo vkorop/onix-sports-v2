@@ -41,6 +41,12 @@ export class Statistic {
 
   @Prop({ type: Teams, required: true })
   team: Teams;
+
+  @Prop({ required: true })
+  enemy: ObjectId[];
+
+  @Prop({ required: true })
+  teammate: ObjectId;
 };
 
 export type StatisticEntity = Statistic & Document;

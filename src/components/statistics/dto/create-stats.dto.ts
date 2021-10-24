@@ -23,4 +23,10 @@ export default class CreateStatsDto {
 
     @ApiProperty({ type: Teams })
     readonly team: Teams = Teams.red;
+
+    @ApiProperty({ type: String })
+    readonly teammate: ObjectId;
+
+    @ApiProperty({ type: [String] })
+    readonly enemy: ObjectId[];
 }

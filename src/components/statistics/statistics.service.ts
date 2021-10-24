@@ -16,7 +16,7 @@ export class StatisticsService {
 
   @OnEvent('games.finished', { async: true })
   public async saveStats({ game, info }: { game: Game, info: GameInfo }) {
-    const stats = info.players.map((player) => ({
+    const stats = info.players.map((player, index, players) => ({
       user: player._id,
       mGoals: player.mGoals,
       rGoals: player.rGoals,
@@ -26,6 +26,12 @@ export class StatisticsService {
       won: player.team == info.winner,
       game: new ObjectId(info.id),
       tournament: info.tournament,
+      teammate: index === 0 ? players[1] : index === 1 ? players[0] : index === 2 ? players[3] : players[2], 
+      enemy: index < 2 ? players.slice(2) : players.slice(0, 2),
+    })).map((stat) => ({
+      ...stat,
+      teammate: new ObjectId(stat.teammate._id),
+      enemy: [new ObjectId(stat.enemy[0]._id), new ObjectId(stat.enemy[1]._id)],
     }));
 
     const _stats = await this.statisticRepository.create(stats);
