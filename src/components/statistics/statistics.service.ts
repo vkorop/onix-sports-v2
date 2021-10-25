@@ -92,8 +92,8 @@ export class StatisticsService {
   public async getLeaderboard() {
     const stats = await this.statisticRepository.getStatsPeriod();
 
-    const users = stats.map(({ goals, games, won, _id, name }) => {
-      const gpg = goals / (games || 1);
+    const users = stats.map(({ rGoals, mGoals, games, won, _id, name }) => {
+      const gpg = (rGoals * 1.2 + mGoals) / (games || 1);
       const winrate = won / (games || 1) * 100;
 
       return { gpg, winrate, games, _id, name };
