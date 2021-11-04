@@ -91,6 +91,12 @@ export class GameProcessService {
       .info();
   }
 
+  public cancel(id: any, actionId: number) {
+    return this.getGame(id)
+      .cancel(actionId)
+      .info();
+  }
+
   private async finish(game: Game) {
     const info = game.info();
 

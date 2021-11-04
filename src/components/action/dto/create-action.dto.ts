@@ -7,7 +7,7 @@ export class CreateActionDto {
   type: ActionType = ActionType.MGOAL;
 
   @ApiProperty({ type: String })
-  player: ObjectId | null = new ObjectId();
+  player: any;
 
   @ApiProperty({ type: Date })
   time: Date = new Date();
