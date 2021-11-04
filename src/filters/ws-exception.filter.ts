@@ -7,7 +7,8 @@ export class WsExceptionFilter extends BaseWsExceptionFilter {
 
   catch(exception: any, host: ArgumentsHost) {
     this.logger.error(exception.message);
-
+    console.log(exception);
+    
     super.catch(exception, host);
   }
 }

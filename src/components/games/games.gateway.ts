@@ -62,6 +62,15 @@ export class GamesGateway implements OnGatewayInit {
     return { event: 'data', data };
   }
 
+  @SubscribeMessage('cancel')
+  public cancel(@MessageBody() { id, actionId }: GameEventDto): WsResponse {
+    const data = this.gameProcessService.cancel(id, actionId);
+
+    this.server.emit('data', data);
+
+    return { event: 'data', data };
+  }
+
   @SubscribeMessage('swap')
   public swap(@MessageBody() { id, playerId }: GameEventDto): WsResponse {
     const data = this.gameProcessService.swap(id, playerId);

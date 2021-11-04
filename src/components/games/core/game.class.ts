@@ -115,7 +115,7 @@ export class Game {
     player.position = teamate.position;
     teamate.position = position;
 
-    this.pushAction({ type: ActionType.SWAP, playerId: id });
+    this.pushAction({ type: ActionType.SWAP, player });
 
     return this;
   }
@@ -124,9 +124,33 @@ export class Game {
     const info = this.info();
     delete info.actions;
     
-    const action = new Action({ type, player, info, game: new ObjectId(this.id), startedAt: this.startedAt });
+    const action = new Action({ 
+      type,
+      player,
+      info,
+      game: new ObjectId(this.id),
+      startedAt: this.startedAt,
+      id: Date.now()
+    });
 
     this.actions.push(action);
+  }
+
+  public cancel(id: number) {
+    const action = this.actions.find((action: Action) => action.id === id);
+    const index = this.actions.findIndex((action: Action) => action.id === id);
+
+    if (action?.player) {
+      action.player.cancel(action.type, action.player.position);
+
+      if ([ActionType.MGOAL, ActionType.RGOAL].includes(action.type)) {
+        this.score[action.player.team] -= 1;
+      }
+
+      this.actions.splice(index, 1);
+    }
+
+    return this;
   }
 
   private finish(team: Teams) {

@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { ActionType } from "../enum/action-type.enum";
 import { Goals } from "../enum/goal.type";
 import { Positions } from "../enum/positions.enum";
 import { Teams } from "../enum/teams.enum";
@@ -52,6 +53,24 @@ export class Player {
       this.amGoals = this.amGoals + 1;
     } else {
       this.arGoals = this.arGoals + 1;
+    }
+  }
+
+  public cancel(type: ActionType, position: Positions) {
+    if ([ActionType.AMGOAL, ActionType.ARGOAL].includes(type)) {
+      if (position == Positions.forward) {
+        this.amGoals = this.amGoals - 1; 
+      } else {
+        this.arGoals = this.arGoals - 1;
+      }
+    }
+
+    if ([ActionType.MGOAL, ActionType.RGOAL].includes(type)) {
+      if (position == Positions.forward) {
+        this.mGoals = this.mGoals - 1; 
+      } else {
+        this.rGoals = this.rGoals - 1;
+      }
     }
   }
 }

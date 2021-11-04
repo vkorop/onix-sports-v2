@@ -7,4 +7,7 @@ export class GameEventDto extends GameIdDto {
 
   @ApiProperty({ type: String })
   readonly enemyId: string = '';
+
+  @ApiProperty({ type: Number })
+  readonly actionId: number;
 }
