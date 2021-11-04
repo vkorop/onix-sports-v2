@@ -30,4 +30,8 @@ export class GamesGatewayDoc {
   @ApiResponse({ type: GameInfoDto, status: 200 })
   @Get('data')
   getData() {}
+
+  @ApiResponse({ type: GameEventDto })
+  @Get('cancel')
+  cancel() {}
 }

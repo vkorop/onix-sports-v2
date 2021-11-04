@@ -1,13 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { ObjectId } from "mongodb";
 import { ActionType } from "../enum/action-type.enum";
+import { Player } from "./player.class";
 
 export class Action {
   @ApiProperty({ type: String })
-  type: any;
+  type: ActionType;
 
   @ApiProperty({ type: String })
-  player: any | null;
+  player: Player | null | undefined;
 
   @ApiProperty({ type: String })
   time: any;
@@ -21,12 +22,18 @@ export class Action {
   @ApiProperty({ type: String })
   game: ObjectId;
 
-  constructor({ type, player, info, game, startedAt }: { type: ActionType, player?: any, info: any, game: ObjectId, startedAt: Date }) {
+  @ApiProperty({ type: Number })
+  id: number;
+
+  constructor({ 
+    type, player, info, game, startedAt, id 
+  }: { type: ActionType, player?: Player, info: any, game: ObjectId, startedAt: Date, id: number }) {
     this.type = type;
     this.player = player;
     this.time = new Date();
     this.timeFromStart = new Date().valueOf() - startedAt.valueOf();
     this.info = info;
     this.game = game;
+    this.id = id;
   }
 }
