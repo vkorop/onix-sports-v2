@@ -17,8 +17,12 @@ export class TournamentRepository {
     return this.tournamentModel.create(tournament);
   }
 
-  getAll({ skip, limit, query }: any = { skip: 0, limit: 0, query: {} }) {
-    return this.tournamentModel.find(query).skip(skip).limit(limit);
+  getAll({ skip, limit, status }: any = { skip: 0, limit: 0 }) {
+    return this.tournamentModel
+      .find({ status })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
   }
 
   async getById(id: StringObjectId) {
