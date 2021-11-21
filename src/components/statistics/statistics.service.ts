@@ -7,6 +7,7 @@ import { ObjectId } from 'mongodb';
 import StatisticsRepository from './statistics.repository';
 import _ from 'lodash';
 import { FakeStatisticsService } from './fake-statistics.service';
+import sortByScore from './helpers/sort-by-score.helper';
 
 @Injectable()
 export class StatisticsService {
@@ -92,32 +93,21 @@ export class StatisticsService {
   }
 
   public async getLeaderboard() {
-    const stats = await this.statisticRepository.getStatsPeriod();
+    let stats = await this.statisticRepository.getStatsPeriod();
     const fakeStats = await this.fakeStatisticService.getStats(stats.map(({ _id }) => new ObjectId(_id)));
 
-    const users = stats.map(({ rGoals, mGoals, games, won, _id, name }) => {
-      const fake = fakeStats.find(({ user }) => user.equals(_id));
-      
-      if (fake) {
-        rGoals = fake.rGoals;
-        mGoals = fake.mGoals;
-        won = fake.won;
-        games = fake.games;
-        name = fake.name;
-      }
+    stats = stats.map((stat) => {
+      return fakeStats.find(({ user }) => user.equals(stat._id)) || stat;
+    })
 
+    const users = stats.map(({ rGoals, mGoals, games, won, _id, name }) => {
       const gpg = (rGoals * 1.2 + mGoals) / (games || 1);
       const winrate = won / (games || 1) * 100;
 
       return { gpg, winrate, games, _id, name };
     });
 
-    return users
-      .sort((a, b) => b.winrate - a.winrate)
-      .map((user, index) => ({ ...user, wScore: users.length - index, }))
-      .sort((a, b) => b.gpg - a.gpg)
-      .map((user, index) => ({ ...user, gScore: users.length - index, score: user.wScore + users.length - index }))
-      .sort((a, b) => b.score - a.score || b.wScore - a.wScore || b.gScore - a.gScore);
+    return sortByScore(users);
   }
 
   public getEnemies(player: ObjectId, enemies: ObjectId[], games: Number = 20) {
