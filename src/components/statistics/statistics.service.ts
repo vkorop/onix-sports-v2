@@ -6,12 +6,14 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { ObjectId } from 'mongodb';
 import StatisticsRepository from './statistics.repository';
 import _ from 'lodash';
+import { FakeStatisticsService } from './fake-statistics.service';
 
 @Injectable()
 export class StatisticsService {
   constructor(
     private readonly statisticRepository: StatisticsRepository,
     private readonly gameService: GamesService,
+    private readonly fakeStatisticService: FakeStatisticsService,
   ) {}
 
   @OnEvent('games.finished', { async: true })
@@ -91,8 +93,19 @@ export class StatisticsService {
 
   public async getLeaderboard() {
     const stats = await this.statisticRepository.getStatsPeriod();
+    const fakeStats = await this.fakeStatisticService.getStats(stats.map(({ _id }) => new ObjectId(_id)));
 
     const users = stats.map(({ rGoals, mGoals, games, won, _id, name }) => {
+      const fake = fakeStats.find(({ user }) => user.equals(_id));
+      
+      if (fake) {
+        rGoals = fake.rGoals;
+        mGoals = fake.mGoals;
+        won = fake.won;
+        games = fake.games;
+        name = fake.name;
+      }
+
       const gpg = (rGoals * 1.2 + mGoals) / (games || 1);
       const winrate = won / (games || 1) * 100;
 
