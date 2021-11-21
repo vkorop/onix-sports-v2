@@ -27,7 +27,8 @@ export class TournamentService {
 
   @OnEvent('games.created', { async: true })
   async pushGames({ games }: { games: GameEntity[] }) {
-    const promises = games.map(({ tournament, _id, players }) => 
+    const _games = Array.isArray(games) ? games : [games]; 
+    const promises = _games.map(({ tournament, _id, players }) => 
       this.tournamentRepository.update({ 
         _id: tournament,
         status: TournamentStatus.OPENED 

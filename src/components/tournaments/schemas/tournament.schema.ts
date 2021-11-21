@@ -1,5 +1,6 @@
 import gamesConstants from "@components/games/games-constants";
 import userConstants from "@components/users/user-constants";
+import { TournamentConstants as tournamentConstants} from "../tournament.constants";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ObjectId } from "mongoose";
 import { TournamentStatus } from "../enum/tour-status.enum";
@@ -28,4 +29,16 @@ export class Tournament {
 
 export type TournamentDocument = Tournament & Document;
 
-export const TournamentSchema = SchemaFactory.createForClass(Tournament);
+export const TournamentSchema = SchemaFactory.createForClass<Tournament>(Tournament);
+
+TournamentSchema.pre('save', async function (next) {
+  const title = Reflect.get(this, 'title');
+
+  if (title === tournamentConstants.defaults.tournaments.title) {
+    const count = await this.collection.countDocuments() + 1;
+
+    Reflect.set(this, 'title', `${tournamentConstants.defaults.tournaments.title} #${count}`);
+  }
+
+  next();
+});

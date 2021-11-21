@@ -1,14 +1,18 @@
-import { StringObjectId } from "@components/common/types/string-objectid.type";
+import { toObjectId } from "@components/common/transforms/to-object-id.transform";
+import { toObjectIds } from "@components/common/transforms/to-object-ids.transform";
 import { ApiProperty } from "@nestjs/swagger";
-import { ObjectId } from "mongoose";
+import { Transform } from "class-transformer";
+import { ObjectId } from "mongodb";
 
 export default class CreateGameDto {
     @ApiProperty({ type: String })
-    readonly title?: string | null = '';
+    readonly title?: string | null;
 
     @ApiProperty({ type: [String] })
-    readonly players: ObjectId[] = [];
+    @Transform(toObjectIds)
+    readonly players: ObjectId[];
 
     @ApiProperty({ type: String })
-    readonly tournament: StringObjectId = '';
+    @Transform(toObjectId)
+    readonly tournament?: ObjectId;
 }
