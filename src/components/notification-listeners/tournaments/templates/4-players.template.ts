@@ -5,16 +5,16 @@ export const fourPlayersTemplate = ({
   players: [p1, p2, p3, p4], tournament } : { players: any[], teams: any[], tournament: TournamentDocument
   }) => (
   `
-===============================================
-                                    ${tournament.title}
-                                        ${TournamentType.FOUR_PLAYERS}
+  ===============================
+                        ${tournament.title}
+                            ${TournamentType.FOUR_PLAYERS}
 
-                                            Games
-                          ${p1.name} ${p2.name} vs ${p3.name} ${p4.name}
+                                Games
+              ${p1.name} ${p2.name} vs ${p3.name} ${p4.name}
 
-                          ${p1.name} ${p3.name} vs ${p2.name} ${p4.name}
+              ${p1.name} ${p3.name} vs ${p2.name} ${p4.name}
 
-                          ${p1.name} ${p4.name} vs ${p2.name} ${p3.name}
-===============================================
+              ${p1.name} ${p4.name} vs ${p2.name} ${p3.name}
+===============================
   `
 )
