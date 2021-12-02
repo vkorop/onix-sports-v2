@@ -59,6 +59,7 @@
     "@types/supertest": "^2.0.10",
     "@typescript-eslint/eslint-plugin": "^4.6.1",
     "@typescript-eslint/parser": "^4.6.1",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.12.1",
     "eslint-config-prettier": "7.0.0",
     "eslint-plugin-prettier": "^3.1.4",
@@ -99,5 +100,10 @@
     "@responses": "./dist/responses",
     "@interceptors": "./dist/interceptors",
     "@decorators": "./dist/decorators"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
