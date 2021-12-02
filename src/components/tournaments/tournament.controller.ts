@@ -41,7 +41,7 @@ export class TournamentController {
   })
   @Get('/')
   public getTournaments(
-    @Query('status', ParseNumberPipe) status: number,
+    @Query('status') status: string,
     @Query('skip', ParseNumberPipe) skip: number,
     @Query('limit', ParseNumberPipe) limit: number,
   ) {

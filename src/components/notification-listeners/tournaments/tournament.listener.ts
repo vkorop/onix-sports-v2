@@ -31,8 +31,8 @@ export class TournamentListener extends NotificationListener {
   @OnEvent('tournament.generated')
   async handleTournamentGenerated({ tournament, players, teams } : any) {
     const _teams = await this.statisticService.getTeamsWinChance(teams, 50);
-    const message = this.templates[tournament.type](players, _teams);
+    const message = this.templates[tournament.type]({ players, teams: _teams, tournament });
 
-    this.notificationService.sendToAll(message, { parse_mode: 'HTML' });
+    this.notificationService.sendToAll(message, { parse_mode: 'Markdown' });
   }
 }

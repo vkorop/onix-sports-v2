@@ -14,7 +14,7 @@ export default class GamesRepository {
     private readonly gameModel: Model<GameEntity>
   ) {}
 
-  async create(_games: CreateGameDto[], select?: any) {
+  async create(_games: CreateGameDto[]| CreateGameDto, select?: any) {
     const games = await this.gameModel.create(_games);
 
     return this.gameModel.populate(games, { path: 'players', select });

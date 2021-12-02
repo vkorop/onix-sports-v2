@@ -22,8 +22,8 @@ export class GamesController {
   }
 
   @Post('/')
-  @ApiBody({ type: [CreateGamesDto] })
-  public async createGames(@Body() gamesDto: CreateGamesDto[]) {
+  @ApiBody({ type: CreateGamesDto })
+  public async createGames(@Body() gamesDto: CreateGamesDto) {
     const games = await this.gameService.createGames(gamesDto);
 
     return games;

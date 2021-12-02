@@ -6,12 +6,15 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { ObjectId } from 'mongodb';
 import StatisticsRepository from './statistics.repository';
 import _ from 'lodash';
+import { FakeStatisticsService } from './fake-statistics.service';
+import sortByScore from './helpers/sort-by-score.helper';
 
 @Injectable()
 export class StatisticsService {
   constructor(
     private readonly statisticRepository: StatisticsRepository,
     private readonly gameService: GamesService,
+    private readonly fakeStatisticService: FakeStatisticsService,
   ) {}
 
   @OnEvent('games.finished', { async: true })
@@ -90,7 +93,12 @@ export class StatisticsService {
   }
 
   public async getLeaderboard() {
-    const stats = await this.statisticRepository.getStatsPeriod();
+    let stats = await this.statisticRepository.getStatsPeriod();
+    const fakeStats = await this.fakeStatisticService.getStats(stats.map(({ _id }) => new ObjectId(_id)));
+
+    stats = stats.map((stat) => {
+      return fakeStats.find(({ user }) => user.equals(stat._id)) || stat;
+    })
 
     const users = stats.map(({ rGoals, mGoals, games, won, _id, name }) => {
       const gpg = (rGoals * 1.2 + mGoals) / (games || 1);
@@ -99,12 +107,7 @@ export class StatisticsService {
       return { gpg, winrate, games, _id, name };
     });
 
-    return users
-      .sort((a, b) => b.winrate - a.winrate)
-      .map((user, index) => ({ ...user, wScore: users.length - index, }))
-      .sort((a, b) => b.gpg - a.gpg)
-      .map((user, index) => ({ ...user, gScore: users.length - index, score: user.wScore + users.length - index }))
-      .sort((a, b) => b.score - a.score || b.wScore - a.wScore || b.gScore - a.gScore);
+    return sortByScore(users);
   }
 
   public getEnemies(player: ObjectId, enemies: ObjectId[], games: Number = 20) {

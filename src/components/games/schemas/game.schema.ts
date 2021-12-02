@@ -1,4 +1,4 @@
-import { Document, Mixed } from 'mongoose';
+import { Document } from 'mongoose';
 import { ObjectId } from 'mongodb';
 
 import gameConstants from '../games-constants';
@@ -8,7 +8,6 @@ import { GameStatus } from '../enum/game-status.enum';
 import { Teams } from '../enum/teams.enum';
 import { TournamentConstants } from '@components/tournaments/tournament.constants';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { StringObjectId } from '@components/common/types/string-objectid.type';
 
 @Schema({
   versionKey: false,
