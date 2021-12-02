@@ -22,6 +22,6 @@ export class GameListener extends NotificationListener {
   async handleGameStart({ id }: { id: string }) {
     const { players, _id } = await this.gameService.getGameInfo(new ObjectId(id));
 
-    this.notificationService.sendToAll(gameStartedTemplate({ players, _id }), { parse_mode: 'HTML' });
+    this.notificationService.sendToAll(...gameStartedTemplate({ players, _id }));
   }
 }
