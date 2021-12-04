@@ -12,6 +12,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from '../auth/auth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { SeasonsModule } from '@components/seasons/seasons.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { AppService } from './app.service';
     ActionModule,
     NotificationModule,
     ListenersModule,
+    SeasonsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
