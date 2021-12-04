@@ -1,4 +1,5 @@
 import { NotificationListener } from "@components/notification/abstract/notification-listener.absctract";
+import { NotificationMessage } from "@components/notification/interfaces/notification-message.interface";
 import { NotificationService } from "@components/notification/notification.service";
 import { StatisticsService } from "@components/statistics/statistics.service";
 import { TournamentType } from "@components/tournaments/enum/tour-type.enum";
@@ -26,6 +27,11 @@ export class TournamentListener extends NotificationListener {
     [TournamentType.EIGHT_PLAYERS]: eightPlayersTemplate,
   }
 
+  pollKeywords: string[] = [
+    'го футбик', 'го футбол', 'го футбік', 'може катнем', 'пора катнуть', 'go football',
+    'го в футбол', 'го доиграем', 'го катнем', 'го катку', 'го сыграем', 'давай в футбол', 'давайте в футбол',
+  ];
+
   bindHandlers() {}
 
   @OnEvent('tournament.generated')
@@ -34,5 +40,15 @@ export class TournamentListener extends NotificationListener {
     const message = this.templates[tournament.type]({ players, teams: _teams, tournament });
 
     this.notificationService.sendToAll(message, { parse_mode: 'Markdown' });
+  }
+
+  @OnEvent('notification.message')
+  handleMessage({ ctx }: NotificationMessage<any>) {
+    const text: string = (ctx.message as any).text;
+    const isMatched = this.pollKeywords.some((keywords) => text.toLowerCase().includes(keywords));
+
+    if (!isMatched) return;
+
+    ctx.replyWithPoll('Football?', ['+', '-', '+, ~10 min'], { is_anonymous: false });
   }
 }
