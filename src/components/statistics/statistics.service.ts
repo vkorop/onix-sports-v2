@@ -92,8 +92,8 @@ export class StatisticsService {
     return chances;
   }
 
-  public async getLeaderboard() {
-    let stats = await this.statisticRepository.getStatsPeriod();
+  public async getLeaderboard(dateFrom?: Date, dateTo?: Date) {
+    let stats = await this.statisticRepository.getStatsPeriod([], dateFrom, dateTo);
     const fakeStats = await this.fakeStatisticService.getStats(stats.map(({ _id }) => new ObjectId(_id)));
 
     stats = stats.map((stat) => {

@@ -9,7 +9,8 @@ export const gameStartedTemplate = ({ players, _id }: any): MessageArguments => 
       reply_markup: Markup.inlineKeyboard([
         Markup.button.url('Watch', `http://onix-sports.herokuapp.com/games/${_id}/watch`),
         Markup.button.callback('Notify on end', 'notify_on_end'),
-      ]).reply_markup
+      ]).reply_markup,
+      disable_notification: true,
     }
   ];
 };

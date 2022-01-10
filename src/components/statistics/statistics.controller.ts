@@ -25,9 +25,14 @@ export class StatisticsController {
     return this.statisticService.getStatsPeriod(ids, dateFrom, dateTo);
   }
 
+  @ApiQuery({ name: 'dateFrom', type: Number, required: false })
+  @ApiQuery({ name: 'dateTo', type: Number, required: false })
   @Get('/leaderboard')
-  public getLeaderboard() {
-    return this.statisticService.getLeaderboard();
+  public getLeaderboard(
+    @Query('dateFrom', ParseDatePipe) dateFrom: any,
+    @Query('dateTo', ParseDatePipe) dateTo: any,
+  ) {
+    return this.statisticService.getLeaderboard(dateFrom, dateTo);
   }
 
   @ApiParam({
