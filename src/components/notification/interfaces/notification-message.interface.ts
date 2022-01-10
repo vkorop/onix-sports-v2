@@ -4,7 +4,7 @@ import { Update } from "typegram";
 
 export interface NotificationMessage<T> {
   bot: Telegraf<Context<Update>>,
-  data: MatchedContext<Context<Update>, "message">
+  ctx: MatchedContext<Context<Update>, "message">
 }
 
 type MatchedContext<

@@ -24,6 +24,8 @@ export class GameProcessService {
 
   private appendGame(game: Game) {
     this.emiter.once(gameEvent(game.id, 'finish'), () => {
+      this.eventEmitter.emit('game.finished', { id: game.id, info: game.info() });
+
       this.finish(game);
       this.removeGame(game.id);
     })

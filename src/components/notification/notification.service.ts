@@ -32,10 +32,10 @@ export class NotificationService implements OnModuleInit {
   }
 
   private bindHandlers() {
-    this.bot.on('message', (data) => {
-      this.chatRepository.create({ chatId: data.chat.id, type: data.chat.type as ChatType });
+    this.bot.on('message', (ctx) => {
+      this.chatRepository.create({ chatId: ctx.chat.id, type: ctx.chat.type as ChatType });
 
-      this.eventEmitter.emit('notification.message', { bot: this.bot, data });
+      this.eventEmitter.emit('notification.message', { bot: this.bot, ctx });
     });
   }
 
