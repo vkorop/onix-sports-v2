@@ -27,7 +27,9 @@ import { AppService } from './app.service';
     EventEmitterModule.forRoot({
       delimiter: '.'
     }),
-    MainPuppeteerModule.forRoot(),
+    MainPuppeteerModule.forRoot({
+      executablePath: '/usr/bin/chromium-browser',
+    }),
     StatisticsModule,
     GamesModule,
     TournamentModule,
