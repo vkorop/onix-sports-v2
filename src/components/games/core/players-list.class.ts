@@ -9,7 +9,7 @@ export class Players {
     }
 
     public get(id: any) {
-        const player = this.players.find(({ _id }: any) => _id == id);
+        const player = this.players.find(({ _id }: Player) => _id == id);
 
         if (!player) throw new Error('Player was not found');
 
