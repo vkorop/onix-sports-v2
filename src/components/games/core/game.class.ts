@@ -69,7 +69,7 @@ export class Game {
       player.autogoal();
 
       const type = player.position == Positions.forward ? ActionType.AMGOAL : ActionType.ARGOAL;
-      this.pushAction({ type, player });
+      this.pushAction({ type, player: this.players.get(id) });
     }
 
     const player = this.players.get(id);

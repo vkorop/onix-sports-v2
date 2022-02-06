@@ -4,8 +4,10 @@ import { GameInfo } from "@components/games/core/interfaces/game-info.interface"
 import { ActionType } from "@components/games/enum/action-type.enum";
 import { GamesGateway } from "@components/games/games.gateway";
 import { gameEvent } from "@components/games/utils/event.util";
-import { Injectable, Logger } from "@nestjs/common";
+import { WsExceptionFilter } from "@filters/ws-exception.filter";
+import { Injectable, Logger, UseFilters } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
+import { MessageBody, SubscribeMessage, WebSocketGateway } from "@nestjs/websockets";
 import { IExtention } from "../interfaces/extention.interface";
 import { authors } from "./authors";
 import { IGetRandomMessageResult } from "./interfaces/chat-extention.interfaces";
@@ -13,6 +15,8 @@ import { IMessage } from "./interfaces/message.interface";
 import { Message, messages } from "./messages";
 
 @Injectable()
+@UseFilters(new WsExceptionFilter())
+@WebSocketGateway({ transports: ['websocket'] })
 export class ChatExtention implements IExtention {
   constructor(
     private readonly gameGateway: GamesGateway,
@@ -39,6 +43,17 @@ export class ChatExtention implements IExtention {
     delete this.chats[id];
   }
 
+  @SubscribeMessage('chat.message')
+  private handleMessage(@MessageBody() { text, author }: { text: string, author: string }) {
+    console.log(text, author);
+
+    if (!text || !author) return;
+
+    this.gameGateway.server.emit('chat.message', {
+      text, author, time: new Date(),
+    });
+  }
+
   private handleAction(data: IActionEventData) {
     this.chats[data.info.id].info = data.info;
     this.chats[data.info.id].actions = data.actions;
@@ -50,15 +65,56 @@ export class ChatExtention implements IExtention {
     if (!actions) return;
 
     const lastAction = actions[actions.length - 1];
+    const preLastAction = actions[actions.length - 2];
     let messagesArray: Message[] = [];
 
-    if (Date.now() - lastAction.time.valueOf() < 2000) {
-      switch (lastAction.type) {
-        case ActionType.MGOAL: messagesArray = messages[ActionType.MGOAL]; break;
-        case ActionType.RGOAL: messagesArray = messages[ActionType.RGOAL]; break;
-        case ActionType.START: messagesArray = messages[ActionType.START]; break;
-      }
-    } else if (Math.random() > .95) {
+    switch (lastAction.type) {
+      case ActionType.MGOAL: 
+        if (Date.now() - lastAction.time.valueOf() > 5000 || Math.random() < .35) break;
+
+        messagesArray = messages[ActionType.MGOAL]; 
+      break;
+      case ActionType.RGOAL: 
+        if (Date.now() - lastAction.time.valueOf() > 5000 || Math.random() < .35) break;
+
+        messagesArray = messages[ActionType.RGOAL]; 
+      break;
+      case ActionType.START: 
+        if (Date.now() - lastAction.time.valueOf() > 5000 || Math.random() < .35) break;
+
+        messagesArray = messages[ActionType.START]; 
+      break;
+      case ActionType.PAUSE: 
+        if (Math.random() < .8) break;
+
+        messagesArray = messages[ActionType.PAUSE]; 
+      break;
+      case ActionType.RESUME: 
+      if (Date.now() - lastAction.time.valueOf() > 5000 || Math.random() < .35) break;
+
+        messagesArray = messages[ActionType.RESUME]; 
+      break;
+      case ActionType.SWAP: 
+      if (Date.now() - lastAction.time.valueOf() > 3000 || Math.random() < .35) break;
+
+        messagesArray = messages[ActionType.SWAP]; 
+      break;
+    }
+
+    switch (preLastAction?.type) {
+      case ActionType.AMGOAL: 
+      if (Date.now() - lastAction.time.valueOf() > 5000 || Math.random() < .35) break;
+
+        messagesArray = messages[ActionType.AMGOAL]; 
+      break;
+      case ActionType.ARGOAL: 
+      if (Date.now() - lastAction.time.valueOf() > 5000 || Math.random() < .35) break;
+
+        messagesArray = messages[ActionType.ARGOAL]; 
+      break;
+    }
+
+    if (Math.random() > .95 && Date.now() - lastAction.time.valueOf() > 5000) {
       messagesArray = messages.idle;
     }
 
