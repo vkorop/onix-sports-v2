@@ -10,6 +10,8 @@ import { GameInfo } from "./interfaces/game-info.interface";
 import { Player } from "./player.class";
 import { Players } from "./players-list.class";
 import { ObjectId } from "mongodb";
+import { IPushAction } from "./interfaces/game-class.interfaces";
+import { IActionEventData } from "./interfaces/action-event-data.interface";
 
 const TEAMS_ORDER = [Teams.red, Teams.red, Teams.blue, Teams.blue]
 const POSITIONS_ORDER = [Positions.goalkeeper, Positions.forward, Positions.goalkeeper, Positions.forward];
@@ -31,8 +33,6 @@ export class Game {
 
   emitter: EventEmitter = new EventEmitter();
 
-  private eventEmitter: EventEmitter2;
-
   constructor({ id, teams, title, emitter, eventEmitter, tournament }: any) {
     const _players = teams.map(({ _id, name }: any, i: number) => new Player({
       _id,
@@ -45,7 +45,6 @@ export class Game {
     this.title = title;
     this.players = new Players(_players);
     this.emitter = emitter;
-    this.eventEmitter = eventEmitter;
     this.tournament = tournament;
 
     this.pushAction({ type: ActionType.START });
@@ -120,9 +119,8 @@ export class Game {
     return this;
   }
 
-  public pushAction({ type, player }: any) {
-    const info = this.info();
-    delete info.actions;
+  public pushAction({ type, player }: IPushAction) {
+    const { actions, ...info } = this.info();
     
     const action = new Action({ 
       type,
@@ -134,6 +132,7 @@ export class Game {
     });
 
     this.actions.push(action);
+    this.emitter.emit(gameEvent(this.id, 'action'), { type, player, info, actions: this.actions } as IActionEventData);
   }
 
   public cancel(id: number) {
@@ -161,8 +160,7 @@ export class Game {
     this.duration = this.finishedAt.valueOf() - this.startedAt.valueOf() - this.totalPauseDuration;
 
     this.emitter.emit(gameEvent(this.id, 'finish'));
-
-    this.pushAction({ type: ActionType.FINISH, info: this.info() });
+    this.pushAction({ type: ActionType.FINISH });
   }
 
   public info(): GameInfo {

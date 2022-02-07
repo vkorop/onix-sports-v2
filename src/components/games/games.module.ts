@@ -8,6 +8,7 @@ import gamesConstants from './games-constants';
 import { GamesGateway } from './games.gateway';
 import { GameProcessService } from './game-process.service';
 import { GamesGatewayDoc } from './games.gateway.doc';
+import { ChatExtention } from './extentions/chat/chat.service';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { GamesGatewayDoc } from './games.gateway.doc';
     ]),
   ],
   controllers: [GamesController, GamesGatewayDoc],
-  providers: [GamesService, GamesRepository, GamesGateway, GameProcessService],
+  providers: [GamesService, GamesRepository, GamesGateway, GameProcessService, ChatExtention],
   exports: [GamesService, GamesRepository],
 })
 export class GamesModule {}

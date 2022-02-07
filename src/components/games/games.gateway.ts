@@ -6,6 +6,7 @@ import { Server } from 'socket.io';
 import { EventEmitter } from 'stream';
 import { GameEventDto } from './dto/game-event.dto';
 import { GameProcessService } from './game-process.service';
+import { IFinish } from './interfaces/games-gateway.interfaces';
 
 @UseFilters(new WsExceptionFilter())
 @WebSocketGateway({ transports: ['websocket'] })
@@ -20,7 +21,7 @@ export class GamesGateway implements OnGatewayInit {
   server: Server = new Server();
 
   private logger: Logger = new Logger(GamesGateway.name);
-  private emiter: EventEmitter = new EventEmitter();
+  public emiter: EventEmitter = new EventEmitter();
 
   afterInit() {
     this.emiter = this.gameProcessService.Emiter;
@@ -28,7 +29,7 @@ export class GamesGateway implements OnGatewayInit {
     this.emiter.on('finish', this.finish);
   }
 
-  public finish({ id, info }: any) {
+  private finish({ id, info }: IFinish) {
     this.server.emit('finish', { id, info });
   }
 
@@ -39,7 +40,7 @@ export class GamesGateway implements OnGatewayInit {
     const data = this.gameProcessService.info(id);
 
     this.server.emit('data', data);
-    this.eventEmitter.emit('game.started', { id });
+    this.eventEmitter.emit('game.started', { id, info: data });
 
     return { event: 'data', data };
   }

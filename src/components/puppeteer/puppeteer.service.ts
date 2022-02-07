@@ -13,7 +13,6 @@ export class PuppeteerService {
 
   public async screenshot(html: string, viewport?: Viewport) {
     await this.page.setViewport({ width: 600, height: 550 });
-    
     await this.page.setContent(html);
 
     const path = this.screenshotRepository.newPath(`new-${Date.now()}.png`);
