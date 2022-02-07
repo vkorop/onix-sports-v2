@@ -35,6 +35,8 @@ export class StatisticListener extends NotificationListener {
       goalsPercent: goals[0].goals / totalGoals * 100
     });
 
+    this.puppeteerService.removeScreenshots();
+
     const path = await this.puppeteerService.screenshot(html);
 
     await this.notificationService.sendPhotoToAll({ source: path }, { caption: 
@@ -49,7 +51,5 @@ TOTAL - ${goals[0].name}'s goals / all players goals
 #bestperformer
 #${goals[0].name}
     `, parse_mode: 'HTML' });
-
-    this.puppeteerService.removeScreenshots();
   }
 }

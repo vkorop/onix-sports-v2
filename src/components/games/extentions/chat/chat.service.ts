@@ -55,8 +55,16 @@ export class ChatExtention implements IExtention {
   }
 
   private handleAction(data: IActionEventData) {
-    this.chats[data.info.id].info = data.info;
-    this.chats[data.info.id].actions = data.actions;
+    const chat = this.chats[data.info.id];
+
+    if (!chat) return;
+
+    chat.info = data.info;
+    chat.actions = data.actions;
+  }
+
+  private getRandomFrom(array: any[]) {
+    return array[Math.floor(Math.random() * array.length)];
   }
 
   private chatAI(id: string) {
@@ -120,8 +128,8 @@ export class ChatExtention implements IExtention {
 
     if (!messagesArray.length) return;
 
-    const text = messagesArray[Math.floor(Math.random() * messagesArray.length)](lastAction?.player?.name);
-    const author = authors[Math.floor(Math.random() * authors.length)];
+    const text = this.getRandomFrom(messagesArray)(preLastAction?.player?.name || lastAction?.player?.name);
+    const author = this.getRandomFrom(authors);
 
     this.gameGateway.server.emit('chat.message', { 
       text, author, time: new Date(),
