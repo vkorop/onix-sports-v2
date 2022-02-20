@@ -1,22 +1,15 @@
-import { TournamentType } from "@components/tournaments/enum/tour-type.enum";
 import { TournamentDocument } from "@components/tournaments/schemas/tournament.schema";
+import fs from 'fs';
+import Handlebars from 'handlebars';
 
 export const sixPlayersTemplate = ({ 
-  players: [p1, p2, p3, p4], teams, tournament } : { players: any[], teams: any[], tournament: TournamentDocument
-  }) => (
-  `
-===============================================
-                                    ${tournament.title}
-                                      ${TournamentType.SIX_PLAYERS}
+  players: [p1, p2, p3, p4, p5, p6], teams, tournament } : { players: any[], teams: any[], tournament: TournamentDocument
+  }) => {
+    const hbs = fs.readFileSync(`${process.cwd()}/src/components/notification-listeners/tournaments/templates/6-players.hbs`, {
+      encoding: 'utf-8',
+    });
 
-                                            Teams
-                          ${teams.map(({ player1, player2, chance }: any) => 
-                          `
-                                ${player1.name} with ${player2.name} *${chance.toFixed(2)}%*
-                          `).join(' ')}
-
-                                          First game
-                            ${p1.name} ${p2.name} vs ${p3.name} ${p4.name}
-===============================================
-  `
-)
+    teams = teams.map((team) => ({ ...team, chance: team.chance.toFixed(2) }));
+  
+    return Handlebars.compile(hbs)({ players: [p1, p2, p3, p4, p5, p6], teams, tournament }, { allowProtoPropertiesByDefault: true });
+  }

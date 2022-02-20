@@ -1,6 +1,7 @@
 import { NotificationListener } from "@components/notification/abstract/notification-listener.absctract";
 import { NotificationMessage } from "@components/notification/interfaces/notification-message.interface";
 import { NotificationService } from "@components/notification/notification.service";
+import { PuppeteerService } from "@components/puppeteer/puppeteer.service";
 import { StatisticsService } from "@components/statistics/statistics.service";
 import { TournamentType } from "@components/tournaments/enum/tour-type.enum";
 import { Injectable } from "@nestjs/common";
@@ -37,9 +38,9 @@ export class TournamentListener extends NotificationListener {
   @OnEvent('tournament.generated')
   async handleTournamentGenerated({ tournament, players, teams } : any) {
     const _teams = await this.statisticService.getTeamsWinChance(teams, 50);
-    const message = this.templates[tournament.type]({ players, teams: _teams, tournament });
+    const html = this.templates[tournament.type]({ players, teams: _teams, tournament });
 
-    this.notificationService.sendToAll(message, { parse_mode: 'Markdown' });
+    await this.notificationService.sendHtmlToAll(html);
   }
 
   @OnEvent('notification.message')
