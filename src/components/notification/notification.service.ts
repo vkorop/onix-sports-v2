@@ -1,3 +1,4 @@
+import { PuppeteerService } from "@components/puppeteer/puppeteer.service";
 import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { EventEmitter2 } from "eventemitter2";
 import { Telegraf } from "telegraf";
@@ -11,6 +12,7 @@ export class NotificationService implements OnModuleInit {
   constructor(
     private readonly chatRepository: ChatRepository,
     private readonly eventEmitter: EventEmitter2,
+    private readonly puppeteerService: PuppeteerService,
   ) {}
 
   private logger: Logger = new Logger(NotificationService.name);
@@ -75,5 +77,12 @@ export class NotificationService implements OnModuleInit {
     chats.forEach((chat) => {
       this.sendPhoto(chat.chatId, photo, extra);
     });
+  }
+
+  public async sendHtmlToAll(html: string, extra?: ExtraPhoto) {
+    this.puppeteerService.removeScreenshots();
+    const path = await this.puppeteerService.screenshot(html);
+
+    await this.sendPhotoToAll({ source: path }, extra);
   }
 }
