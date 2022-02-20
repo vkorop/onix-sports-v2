@@ -1,3 +1,4 @@
+import { PuppeteerModule } from "@components/puppeteer/puppeteer.module";
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ChatRepository } from "./chat.repository";
@@ -11,7 +12,8 @@ import { ChatSchema } from "./schemas/chat.schema";
       name: notificationConstants.models.chats,
       collection: notificationConstants.models.chats,
       schema: ChatSchema,
-    }])
+    }]),
+    PuppeteerModule,
   ],
   providers: [NotificationService, ChatRepository],
   exports: [NotificationService],
